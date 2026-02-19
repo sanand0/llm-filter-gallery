@@ -1,0 +1,19 @@
+# Filter v13: Verdigris Antiquity
+
+## The Aesthetic
+
+Oxidized copper patina with multi-scale corrosion texture and metallic highlight.
+
+## Input
+
+Applied to `inputs/photo.avif`.
+
+## Technique
+
+See `filter.sh` for the full multi-step recipe.
+
+## Tools Used
+
+- `ffmpeg` — AVIF decode
+- Python 3 / Pillow / NumPy / SciPy / scikit-image
+- Output: WebP (quality 75, method 6)
