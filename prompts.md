@@ -56,3 +56,13 @@ Save the results under `output/chart-claude-code-v{1,2,3}/{README.md,filter.sh,o
 - README.md explains the filter and why it's interesting.
 - filter.sh has the code to apply the filter.
 - output.webp is the (maximally compressed) result of applying the filter to inputs/chart.avif.
+
+## Restructure the directories
+
+Create a filters/ that has each of the filters under `output/*/filter.sh`.
+Name them in line with index.html, e.g. `filters/graphite-study.sh`.
+Include `filters/graphite-study.md` which is the same as `output/*/README.md` -- ignoring the last line, which is different across the variants.
+
+Move `output/*/output.webp` into `output/$image-$filter-name.webp`, e.g. `output/comic-graphite-study.webp`.
+
+Update index.html accordingly.
