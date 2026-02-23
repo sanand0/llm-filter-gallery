@@ -1,0 +1,2562 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How Three Models Judge Art: A Data Story of the LLM Filter Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f1e6;
+      --paper: #fffaf0;
+      --paper-2: #f4ecdb;
+      --ink: #13100d;
+      --muted: #605648;
+      --line: rgba(19, 16, 13, 0.12);
+      --line-strong: rgba(19, 16, 13, 0.28);
+      --gpt: #0e7490;
+      --claude: #b45309;
+      --gemini: #7c3aed;
+      --accent: #c2410c;
+      --good: #0f766e;
+      --warn: #b45309;
+      --danger: #be123c;
+      --shadow: 0 12px 32px rgba(27, 21, 14, 0.08);
+      --radius: 18px;
+      --maxw: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background:
+        radial-gradient(circle at 15% 5%, rgba(14, 116, 144, 0.08), transparent 38%),
+        radial-gradient(circle at 88% 12%, rgba(180, 83, 9, 0.08), transparent 42%),
+        radial-gradient(circle at 50% 100%, rgba(124, 58, 237, 0.06), transparent 38%),
+        linear-gradient(180deg, #f9f4ea 0%, #f5eddd 55%, #f3ebdc 100%);
+      color: var(--ink);
+      font-family: "Spectral", Georgia, serif;
+      line-height: 1.45;
+      min-height: 100%;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.22;
+      background-image:
+        linear-gradient(to right, rgba(19, 16, 13, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(19, 16, 13, 0.02) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.45));
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 28px 18px 64px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      color: var(--muted);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    .topbar nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 250, 240, 0.75);
+      text-decoration: none;
+      backdrop-filter: blur(4px);
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(255, 250, 240, 0.95), rgba(244, 236, 219, 0.88)),
+        radial-gradient(circle at 80% 0%, rgba(14, 116, 144, 0.08), transparent 45%);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 26px;
+      padding: 22px 22px 20px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -28px;
+      top: -28px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: conic-gradient(from 120deg, rgba(14,116,144,0.14), rgba(180,83,9,0.12), rgba(124,58,237,0.1), rgba(14,116,144,0.14));
+      filter: blur(14px);
+      opacity: 0.8;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 22px;
+      height: 1px;
+      background: var(--line-strong);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      max-width: 15ch;
+    }
+
+    .dek {
+      margin: 0;
+      max-width: 68ch;
+      color: #2d261f;
+      font-size: clamp(1rem, 1.3vw, 1.15rem);
+    }
+
+    .hero-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1.3fr 1fr;
+      margin-top: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-copy p {
+      margin: 0 0 10px;
+      color: var(--ink);
+    }
+
+    .hero-copy p:last-child {
+      margin-bottom: 0;
+    }
+
+    .hero-copy strong {
+      font-weight: 600;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      align-content: start;
+    }
+
+    .stat-card {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 14px;
+      padding: 10px 12px;
+      box-shadow: 0 8px 20px rgba(24, 18, 12, 0.04);
+    }
+
+    .stat-label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stat-value {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.4rem;
+      line-height: 1.1;
+      margin-top: 3px;
+    }
+
+    .stat-note {
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-top: 2px;
+    }
+
+    .layout {
+      display: grid;
+      gap: 18px;
+    }
+
+    .two-col {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255, 250, 240, 0.92), rgba(255, 250, 240, 0.84));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(14,116,144,0.35), rgba(180,83,9,0.25), rgba(124,58,237,0.3));
+      opacity: 0.85;
+    }
+
+    .panel h2,
+    .panel h3 {
+      margin: 0;
+      font-family: "Fraunces", Georgia, serif;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+
+    .panel h2 {
+      font-size: 1.35rem;
+    }
+
+    .panel h3 {
+      font-size: 1.05rem;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .kicker {
+      font-family: "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .panel p,
+    .panel li {
+      margin-top: 0;
+      color: #2d261f;
+    }
+
+    .panel p:last-child {
+      margin-bottom: 0;
+    }
+
+    .panel ul,
+    .panel ol {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .narrative {
+      padding: 4px 2px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .narrative p {
+      margin: 0;
+      font-size: 1.02rem;
+      color: #241d17;
+      max-width: 70ch;
+    }
+
+    .narrative .lede {
+      font-size: 1.12rem;
+      line-height: 1.5;
+    }
+
+    .narrative .pull {
+      margin: 6px 0;
+      padding: 10px 12px;
+      border-left: 3px solid rgba(14,116,144,0.45);
+      background: rgba(14,116,144,0.05);
+      border-radius: 8px;
+      font-style: italic;
+    }
+
+    .quote-box {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.55);
+      padding: 12px;
+    }
+
+    .quote-box pre {
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      line-height: 1.35;
+      color: #1d1915;
+      max-height: 260px;
+      overflow: auto;
+    }
+
+    .prompt-cards,
+    .method-cards,
+    .callout-grid,
+    .mini-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .prompt-cards {
+      grid-template-columns: 1fr;
+    }
+
+    .prompt-card,
+    .method-card,
+    .callout,
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(255,255,255,0.52);
+    }
+
+    .prompt-card h3,
+    .method-card h3,
+    .callout h3,
+    .mini-card h3 {
+      margin-bottom: 6px;
+    }
+
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+    }
+
+    .legend-inline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot.gpt { background: var(--gpt); }
+    .dot.claude { background: var(--claude); }
+    .dot.gemini { background: var(--gemini); }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 4px 8px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      background: rgba(255,255,255,0.7);
+      color: var(--muted);
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .weight-list {
+      margin-top: 8px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .weight-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(90px, 1fr) 52px;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .weight-row .label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .weight-bar {
+      position: relative;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(19,16,13,0.08);
+      overflow: hidden;
+    }
+
+    .weight-bar > span {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(14,116,144,0.7), rgba(14,116,144,0.28));
+    }
+
+    .weight-bar.claude > span {
+      background: linear-gradient(90deg, rgba(180,83,9,0.75), rgba(180,83,9,0.28));
+    }
+
+    .weight-row .value {
+      text-align: right;
+      font-family: "IBM Plex Mono", monospace;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .chart-wrap {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.5);
+      border-radius: 12px;
+      padding: 8px;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .axis text,
+    .chart-label,
+    .svg-note {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      fill: #574d40;
+    }
+
+    .axis line,
+    .axis path {
+      stroke: rgba(19,16,13,0.16);
+    }
+
+    .gridline {
+      stroke: rgba(19,16,13,0.08);
+      stroke-dasharray: 2 3;
+    }
+
+    .headline-note {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .segmented {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.75);
+    }
+
+    .segmented button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 6px 10px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .segmented button[aria-pressed="true"] {
+      background: rgba(19,16,13,0.08);
+      color: var(--ink);
+    }
+
+    .select {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.78);
+      padding: 6px 10px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--ink);
+    }
+
+    .tableish {
+      display: grid;
+      gap: 6px;
+      margin-top: 10px;
+      max-height: 420px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .row-btn {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.56);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: grid;
+      grid-template-columns: 32px minmax(0,1fr) 90px;
+      gap: 8px;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .row-btn:hover {
+      background: rgba(255,255,255,0.78);
+      border-color: var(--line-strong);
+    }
+
+    .row-btn.is-selected {
+      border-color: rgba(14,116,144,0.45);
+      box-shadow: inset 0 0 0 1px rgba(14,116,144,0.18);
+      background: rgba(14,116,144,0.06);
+    }
+
+    .row-rank {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .row-title {
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .sparkline {
+      position: relative;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(19,16,13,0.07);
+      overflow: hidden;
+    }
+
+    .sparkline > .fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      background: linear-gradient(90deg, rgba(14,116,144,0.35), rgba(180,83,9,0.35));
+    }
+
+    .sparkline .marker {
+      position: absolute;
+      top: 50%;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.75);
+    }
+
+    .row-metric {
+      text-align: right;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .callout-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .callout .metric {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.35rem;
+      margin: 6px 0 2px;
+    }
+
+    .callout .sub {
+      color: var(--muted);
+      font-size: 0.87rem;
+    }
+
+    .case-shell {
+      display: grid;
+      gap: 10px;
+    }
+
+    .case-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .case-name {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.35rem;
+      line-height: 1.05;
+    }
+
+    .score-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .score-tile {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px;
+      background: rgba(255,255,255,0.58);
+    }
+
+    .score-tile .label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .score-tile .value {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.25rem;
+      line-height: 1.1;
+      margin-top: 2px;
+    }
+
+    .score-tile .rank {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 2px;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    figure.thumb {
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.62);
+    }
+
+    .thumb img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      background: rgba(19,16,13,0.06);
+    }
+
+    .thumb figcaption {
+      padding: 6px 8px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .criteria-blocks {
+      display: grid;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .criteria-card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.55);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .criteria-card h4 {
+      margin: 0 0 8px;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1rem;
+    }
+
+    .criterion-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(94px, 1fr) 52px;
+      gap: 8px;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .criterion-row .name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 13px;
+    }
+
+    .criterion-meter {
+      position: relative;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(19,16,13,0.08);
+      overflow: hidden;
+    }
+
+    .criterion-meter > span {
+      position: absolute;
+      inset: 0 auto 0 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(14,116,144,0.72), rgba(14,116,144,0.28));
+    }
+
+    .criterion-meter.claude > span {
+      background: linear-gradient(90deg, rgba(180,83,9,0.72), rgba(180,83,9,0.28));
+    }
+
+    .criterion-value {
+      text-align: right;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .feedback-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .feedback-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.55);
+      padding: 10px;
+    }
+
+    .feedback-card header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .feedback-card h4 {
+      margin: 0;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .feedback-card .meta {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .feedback-card .body {
+      color: #2c241c;
+      font-size: 0.95rem;
+      line-height: 1.38;
+      max-height: 260px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .feedback-card .body p {
+      margin: 0 0 8px;
+    }
+
+    .feedback-card .body ul {
+      margin: 0 0 8px;
+      padding-left: 16px;
+    }
+
+    .feedback-card .body li {
+      margin: 0 0 4px;
+    }
+
+    .insight-band {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: linear-gradient(90deg, rgba(14,116,144,0.06), rgba(180,83,9,0.06));
+      padding: 10px 12px;
+      margin-top: 10px;
+      font-size: 0.94rem;
+    }
+
+    .footnotes {
+      border-top: 1px solid var(--line);
+      margin-top: 8px;
+      padding-top: 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .loading,
+    .error {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.7);
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .error {
+      border-color: rgba(190, 18, 60, 0.25);
+      color: #7f1d1d;
+      background: rgba(255, 241, 242, 0.8);
+    }
+
+    .tooltip {
+      position: fixed;
+      pointer-events: none;
+      z-index: 20;
+      background: rgba(20,17,14,0.96);
+      color: #fff8ef;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 8px 9px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+      transform: translate(-50%, calc(-100% - 12px));
+      min-width: 150px;
+      max-width: 260px;
+      opacity: 0;
+      transition: opacity 0.12s;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .tooltip.visible {
+      opacity: 1;
+    }
+
+    .tooltip .tt-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 13px;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .tooltip .tt-line {
+      font-family: "IBM Plex Mono", monospace;
+      color: rgba(255,248,239,0.82);
+      font-size: 11px;
+    }
+
+    .fade-in {
+      animation: fadeInUp 620ms both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in {
+        animation: none;
+      }
+      * {
+        scroll-behavior: auto;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .two-col,
+      .callout-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .image-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .score-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 14px 12px 44px;
+      }
+
+      .hero {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .panel {
+        padding: 12px;
+      }
+
+      .row-btn {
+        grid-template-columns: 28px minmax(0,1fr) 82px;
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar fade-in" style="animation-delay: 20ms;">
+      <div><a href="./" style="text-decoration:none;">LLM Filter Gallery</a> / Evaluation Story</div>
+      <nav>
+        <a class="pill" href="./">Gallery</a>
+        <a class="pill" href="evaluation.json">Data (JSON)</a>
+        <a class="pill" href="prompts.md">Prompts</a>
+        <a class="pill" href="gpt-evaluation.md">GPT Report</a>
+        <a class="pill" href="sonnet-evaluation.md">Claude Report</a>
+        <a class="pill" href="gemini-evaluation.md">Gemini Report</a>
+      </nav>
+    </div>
+
+    <header class="hero fade-in" style="animation-delay: 60ms;">
+      <div class="eyebrow">Narrative-Driven Data Story</div>
+      <h1>Three Models Walk Into an Art Jury</h1>
+      <p class="dek">They are shown the same 30 filters, the same three test images, and nearly the same instruction: judge like an expert. They do not come back with the same world.</p>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p>At first glance, this looks like a scoring exercise. It is not. It is a story about <strong>what each evaluator notices first</strong>.</p>
+          <p>GPT builds a broad, generous rubric and compresses the field. Claude writes like a curator and punishes cross-input failures. Gemini brings a measurement kit, finds color signatures and palette violations, and sometimes disagrees so sharply that the dispute becomes the finding.</p>
+          <p>This page reconstructs that trial from `prompts.md`, the three evaluation reports, and the consolidated `evaluation.json`.</p>
+        </div>
+        <div id="hero-stats" class="hero-stats" aria-live="polite"></div>
+      </div>
+    </header>
+
+    <div id="app-root" class="layout">
+      <div class="loading fade-in">Loading `evaluation.json` and assembling the case file…</div>
+    </div>
+  </div>
+
+  <div id="tooltip" class="tooltip" role="tooltip" aria-hidden="true"></div>
+
+  <script>
+    const UI = {
+      colors: {
+        gpt: getComputedStyle(document.documentElement).getPropertyValue('--gpt').trim(),
+        claude: getComputedStyle(document.documentElement).getPropertyValue('--claude').trim(),
+        gemini: getComputedStyle(document.documentElement).getPropertyValue('--gemini').trim(),
+        line: 'rgba(19,16,13,0.16)',
+        grid: 'rgba(19,16,13,0.08)',
+        ink: '#1e1812',
+      },
+      evaluatorOrder: ['gpt', 'claude', 'gemini'],
+      evaluatorLabels: {
+        gpt: 'GPT',
+        claude: 'Claude',
+        gemini: 'Gemini',
+      },
+      evaluatorLong: {
+        gpt: 'GPT (Copilot / GPT 5.3 Codex xhigh)',
+        claude: 'Claude Sonnet (Copilot / Sonnet 4.6 High)',
+        gemini: 'Gemini 3 Pro (Copilot Yolo)',
+      },
+      evaluatorMethodNotes: {
+        gpt: [
+          'Human-judge style rubric with 7 criteria and fixed weights.',
+          'Explicitly evaluates filters at the filter level across photo + comic + chart together.',
+          'Publishes numeric per-criterion scores, weighted overall, and detailed strengths/weaknesses per filter.',
+        ],
+        claude: [
+          'Curatorial framework emphasizing medium authenticity, coherence, versatility, technical execution, and impact.',
+          'Provides a weighted 5-criterion formula and long-form per-filter art criticism.',
+          'Most visibly penalizes filters that fail on one input even if another input is striking.',
+        ],
+        gemini: [
+          'Data-assisted critique: average color, variance, dominant color, and unique-color counts support judgments.',
+          'Publishes one overall numeric score per filter (no numeric per-criterion breakdown).',
+          'Tends to reward palette fidelity and punish filters that look statistically unlike the target medium.',
+        ],
+      },
+      fallbackPrompts: {
+        generation: [
+          'Act as a world-class Aesthetic Architect. Generate 3 brand-new, sophisticated, and aesthetically distinct \"Signature Filters\" for inputs/chart.avif…',
+          'Combinatorial creativity, distinct moods, evocative names, and a CLI-heavy tool stack (magick / FFmpeg / Python / GMIC / Fred\'s scripts) are explicitly encouraged.',
+        ].join('\n'),
+        evaluation: [
+          'Let\'s evaluate the filters in this repository. Which of these are really good and why?',
+          'Think like an artist, as an expert in data art, aesthetics, and visual design.',
+          'Imagine that you are a judge judging an art exhibition.',
+          'Prepare a scoring table… include specific feedback… evaluate at the filter level, not the image level.',
+          'Document the process… criteria identification… evaluation… conclusions… transparent and reproducible.',
+        ].join('\n'),
+      },
+    };
+
+    const state = {
+      raw: null,
+      prompts: null,
+      derived: null,
+      selectedFilterId: null,
+      consensusMode: 'raw',
+      scatterPair: 'gpt-claude',
+      braidMode: 'contested',
+    };
+
+    const tooltipEl = document.getElementById('tooltip');
+
+    function fmtPct01(value) {
+      return `${Math.round(value * 100)}%`;
+    }
+
+    function fmtScore(value) {
+      return Number(value).toFixed(3);
+    }
+
+    function fmtNum(value, digits = 3) {
+      return Number(value).toFixed(digits);
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function mean(arr) {
+      return arr.reduce((a, b) => a + b, 0) / arr.length;
+    }
+
+    function pstdev(arr) {
+      const m = mean(arr);
+      return Math.sqrt(arr.reduce((s, x) => s + (x - m) ** 2, 0) / arr.length);
+    }
+
+    function pearson(xs, ys) {
+      const mx = mean(xs);
+      const my = mean(ys);
+      const num = xs.reduce((s, x, i) => s + (x - mx) * (ys[i] - my), 0);
+      const dx = Math.sqrt(xs.reduce((s, x) => s + (x - mx) ** 2, 0));
+      const dy = Math.sqrt(ys.reduce((s, y) => s + (y - my) ** 2, 0));
+      return dx && dy ? num / (dx * dy) : 0;
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function mdToHtml(input) {
+      if (!input) return '<p class="mono">No feedback provided.</p>';
+      const lines = input.replace(/\r/g, '').split('\n');
+      const out = [];
+      let inList = false;
+      const flushList = () => {
+        if (inList) {
+          out.push('</ul>');
+          inList = false;
+        }
+      };
+      const inline = (s) => escapeHtml(s)
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/_(.+?)_/g, '<em>$1</em>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>');
+
+      for (let rawLine of lines) {
+        const line = rawLine.trimEnd();
+        if (!line.trim()) {
+          flushList();
+          continue;
+        }
+        if (/^---+$/.test(line.trim())) {
+          flushList();
+          out.push('<hr>');
+          continue;
+        }
+        const bullet = line.match(/^[-*]\s+(.+)$/);
+        if (bullet) {
+          if (!inList) {
+            out.push('<ul>');
+            inList = true;
+          }
+          out.push(`<li>${inline(bullet[1])}</li>`);
+          continue;
+        }
+        flushList();
+        if (/^#{1,6}\s+/.test(line)) {
+          const text = line.replace(/^#{1,6}\s+/, '');
+          out.push(`<p><strong>${inline(text)}</strong></p>`);
+          continue;
+        }
+        out.push(`<p>${inline(line)}</p>`);
+      }
+      flushList();
+      return out.join('');
+    }
+
+    function makeEl(tag, attrs = {}, children = []) {
+      const el = document.createElement(tag);
+      for (const [key, value] of Object.entries(attrs)) {
+        if (value == null) continue;
+        if (key === 'class') el.className = value;
+        else if (key === 'html') el.innerHTML = value;
+        else if (key === 'text') el.textContent = value;
+        else if (key.startsWith('on') && typeof value === 'function') el.addEventListener(key.slice(2), value);
+        else el.setAttribute(key, String(value));
+      }
+      for (const child of [].concat(children || [])) {
+        if (child == null) continue;
+        el.append(child.nodeType ? child : document.createTextNode(String(child)));
+      }
+      return el;
+    }
+
+    function showTooltip(evt, lines) {
+      tooltipEl.innerHTML = lines.map((line, i) => i === 0
+        ? `<div class="tt-title">${escapeHtml(line)}</div>`
+        : `<div class="tt-line">${escapeHtml(line)}</div>`).join('');
+      tooltipEl.classList.add('visible');
+      tooltipEl.setAttribute('aria-hidden', 'false');
+      moveTooltip(evt);
+    }
+
+    function moveTooltip(evt) {
+      const pad = 12;
+      const x = clamp(evt.clientX, 130, window.innerWidth - 130);
+      let y = evt.clientY - pad;
+      if (y < 80) y = evt.clientY + 26;
+      tooltipEl.style.left = `${x}px`;
+      tooltipEl.style.top = `${y}px`;
+      if (y > evt.clientY) {
+        tooltipEl.style.transform = 'translate(-50%, 0)';
+      } else {
+        tooltipEl.style.transform = 'translate(-50%, calc(-100% - 12px))';
+      }
+    }
+
+    function hideTooltip() {
+      tooltipEl.classList.remove('visible');
+      tooltipEl.setAttribute('aria-hidden', 'true');
+    }
+
+    function slugifyName(name) {
+      return String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    function deriveRankMap(rows) {
+      const sorted = [...rows].sort((a, b) => (b.score - a.score) || a.name.localeCompare(b.name));
+      let rank = 0;
+      let lastScore = null;
+      const rankMap = {};
+      for (let i = 0; i < sorted.length; i += 1) {
+        const row = sorted[i];
+        if (row.score !== lastScore) {
+          rank = i + 1;
+          lastScore = row.score;
+        }
+        rankMap[row['filter-id']] = rank;
+      }
+      return rankMap;
+    }
+
+    function buildDerived(raw) {
+      const filters = raw.filters.map((f) => ({ ...f }));
+      const filterMap = Object.fromEntries(filters.map((f) => [f['filter-id'], f]));
+      const evalsByEvaluator = {};
+      for (const ev of UI.evaluatorOrder) {
+        evalsByEvaluator[ev] = raw.evaluations.filter((r) => r.evaluator === ev);
+      }
+
+      const evaluatorStats = {};
+      for (const ev of UI.evaluatorOrder) {
+        const rows = evalsByEvaluator[ev];
+        const scores = rows.map((r) => r.score);
+        evaluatorStats[ev] = {
+          mean: mean(scores),
+          sd: pstdev(scores),
+          min: Math.min(...scores),
+          max: Math.max(...scores),
+          range: Math.max(...scores) - Math.min(...scores),
+          n: rows.length,
+          ranks: rows.every((r) => typeof r.rank === 'number')
+            ? Object.fromEntries(rows.map((r) => [r['filter-id'], r.rank]))
+            : deriveRankMap(rows),
+        };
+      }
+
+      const byFilter = {};
+      for (const f of filters) {
+        byFilter[f['filter-id']] = {
+          ...f,
+          evaluations: {},
+        };
+      }
+      for (const row of raw.evaluations) {
+        byFilter[row['filter-id']].evaluations[row.evaluator] = row;
+      }
+
+      const filterSummaries = Object.values(byFilter).map((f) => {
+        const scores = UI.evaluatorOrder.map((ev) => f.evaluations[ev].score);
+        const scoreMap = Object.fromEntries(UI.evaluatorOrder.map((ev) => [ev, f.evaluations[ev].score]));
+        const scoreMean = mean(scores);
+        const scoreMedian = [...scores].sort((a, b) => a - b)[1];
+        const scoreRange = Math.max(...scores) - Math.min(...scores);
+        const scoreSd = pstdev(scores);
+        const zScores = {};
+        for (const ev of UI.evaluatorOrder) {
+          const stats = evaluatorStats[ev];
+          zScores[ev] = stats.sd ? (scoreMap[ev] - stats.mean) / stats.sd : 0;
+        }
+        const zMean = mean(Object.values(zScores));
+        const ranks = Object.fromEntries(UI.evaluatorOrder.map((ev) => [ev, evaluatorStats[ev].ranks[f['filter-id']]]));
+        const rankSpread = Math.max(...Object.values(ranks)) - Math.min(...Object.values(ranks));
+        return {
+          ...f,
+          scoreMean,
+          scoreMedian,
+          scoreRange,
+          scoreSd,
+          zScores,
+          zMean,
+          ranks,
+          rankSpread,
+          scoreMap,
+        };
+      });
+
+      const pairwise = {};
+      for (let i = 0; i < UI.evaluatorOrder.length; i += 1) {
+        for (let j = i + 1; j < UI.evaluatorOrder.length; j += 1) {
+          const a = UI.evaluatorOrder[i];
+          const b = UI.evaluatorOrder[j];
+          const key = `${a}-${b}`;
+          const xs = filterSummaries.map((f) => f.scoreMap[a]);
+          const ys = filterSummaries.map((f) => f.scoreMap[b]);
+          pairwise[key] = {
+            a,
+            b,
+            pearson: pearson(xs, ys),
+            points: filterSummaries.map((f) => ({
+              id: f['filter-id'],
+              name: f.name,
+              x: f.scoreMap[a],
+              y: f.scoreMap[b],
+              disagreement: f.scoreRange,
+              consensus: f.scoreMean,
+            })),
+          };
+        }
+      }
+
+      const rankedRaw = [...filterSummaries].sort((a, b) => (b.scoreMean - a.scoreMean) || a.name.localeCompare(b.name));
+      const rankedZ = [...filterSummaries].sort((a, b) => (b.zMean - a.zMean) || a.name.localeCompare(b.name));
+      const contested = [...filterSummaries].sort((a, b) => (b.rankSpread - a.rankSpread) || (b.scoreRange - a.scoreRange) || a.name.localeCompare(b.name));
+      const consensus = [...filterSummaries].sort((a, b) => (a.scoreSd - b.scoreSd) || (b.scoreMean - a.scoreMean) || a.name.localeCompare(b.name));
+
+      const gptCriteriaStats = summarizeCriteria(evalsByEvaluator.gpt);
+      const claudeCriteriaStats = summarizeCriteria(evalsByEvaluator.claude);
+
+      return {
+        filters,
+        filterMap,
+        byFilter,
+        evaluatorStats,
+        evalsByEvaluator,
+        filterSummaries,
+        rankedRaw,
+        rankedZ,
+        contested,
+        consensus,
+        pairwise,
+        gptCriteriaStats,
+        claudeCriteriaStats,
+      };
+    }
+
+    function summarizeCriteria(rows) {
+      const keys = Object.keys(rows[0]?.criteria || {});
+      const result = [];
+      for (const key of keys) {
+        const vals = rows.map((r) => r.criteria[key]).filter((v) => typeof v === 'number');
+        result.push({ key, mean: mean(vals), sd: pstdev(vals) });
+      }
+      return result;
+    }
+
+    async function loadPrompts() {
+      try {
+        const res = await fetch('prompts.md', { cache: 'no-store' });
+        if (!res.ok) throw new Error(`prompts.md ${res.status}`);
+        const text = await res.text();
+        return extractPromptSnippets(text);
+      } catch (err) {
+        console.warn('Could not load prompts.md; using fallback snippets.', err);
+        return UI.fallbackPrompts;
+      }
+    }
+
+    function extractPromptSnippets(text) {
+      const sections = {};
+      const extractSection = (start, endMarkers) => {
+        const startIdx = text.indexOf(start);
+        if (startIdx < 0) return null;
+        const rest = text.slice(startIdx + start.length);
+        let endIdx = rest.length;
+        for (const marker of endMarkers) {
+          const idx = rest.indexOf(marker);
+          if (idx >= 0 && idx < endIdx) endIdx = idx;
+        }
+        return rest.slice(0, endIdx).trim();
+      };
+
+      const generation = extractSection('## Generate the images (Claude Code, Sonnet 4.6)\n', ['## Restructure the directories']);
+      const gptEval = extractSection('### GPT Evaluation (Copilot Yolo, GPT 5.3 Codex xhigh)\n', ['### Claude Evaluation']);
+      sections.generation = generation || UI.fallbackPrompts.generation;
+      sections.evaluation = gptEval || UI.fallbackPrompts.evaluation;
+      return sections;
+    }
+
+    async function loadData() {
+      const [evalRes, prompts] = await Promise.all([
+        fetch('evaluation.json', { cache: 'no-store' }),
+        loadPrompts(),
+      ]);
+      if (!evalRes.ok) throw new Error(`Could not load evaluation.json (${evalRes.status})`);
+      const raw = await evalRes.json();
+      return { raw, prompts };
+    }
+
+    function buildHeroStats() {
+      const host = document.getElementById('hero-stats');
+      host.innerHTML = '';
+      const d = state.derived;
+      const topRaw = d.rankedRaw[0];
+      const mostContested = d.contested[0];
+      const pairMin = Object.values(d.pairwise).sort((a, b) => a.pearson - b.pearson)[0];
+      const gptStats = d.evaluatorStats.gpt;
+      const claudeStats = d.evaluatorStats.claude;
+      const geminiStats = d.evaluatorStats.gemini;
+
+      const cards = [
+        {
+          label: 'Filters / Judges',
+          value: `${d.filters.length} × ${UI.evaluatorOrder.length}`,
+          note: `${state.raw.evaluations.length} evaluations in the combined file`,
+        },
+        {
+          label: 'Consensus Leader (Raw Mean)',
+          value: topRaw.name,
+          note: `mean ${fmtScore(topRaw.scoreMean)} across GPT / Claude / Gemini`,
+        },
+        {
+          label: 'Most Contested Filter',
+          value: mostContested.name,
+          note: `rank spread ${mostContested.rankSpread} (range ${fmtScore(mostContested.scoreRange)})`,
+        },
+        {
+          label: 'Weakest Pairwise Agreement',
+          value: `${UI.evaluatorLabels[pairMin.a]} vs ${UI.evaluatorLabels[pairMin.b]}`,
+          note: `Pearson r = ${fmtNum(pairMin.pearson, 3)}`,
+        },
+        {
+          label: 'Score Range (GPT)',
+          value: `${fmtScore(gptStats.min)}-${fmtScore(gptStats.max)}`,
+          note: `compressed spread: ${fmtScore(gptStats.range)}`,
+        },
+        {
+          label: 'Score Range (Claude / Gemini)',
+          value: `${fmtScore(claudeStats.range)} / ${fmtScore(geminiStats.range)}`,
+          note: `Claude and Gemini separate the field much more`,
+        },
+      ];
+
+      for (const c of cards) {
+        host.append(makeEl('div', { class: 'stat-card' }, [
+          makeEl('div', { class: 'stat-label', text: c.label }),
+          makeEl('div', { class: 'stat-value', text: c.value }),
+          makeEl('div', { class: 'stat-note', text: c.note }),
+        ]));
+      }
+    }
+
+    function render() {
+      buildHeroStats();
+      const root = document.getElementById('app-root');
+      root.innerHTML = '';
+
+      root.append(renderSetupSection());
+      root.append(renderPromptAndMethodSection());
+      root.append(renderDistributionNarrative());
+      root.append(renderDistributionSection());
+      root.append(renderConsensusNarrative());
+      root.append(renderConsensusSection());
+      root.append(renderDisagreementNarrative());
+      root.append(renderBraidAndScatterSection());
+      root.append(renderCaseSection());
+      root.append(renderImplicationsSection());
+    }
+
+    function renderSetupSection() {
+      const d = state.derived;
+      const topConsensus = d.rankedRaw.slice(0, 5).map((f) => f.name).join(', ');
+      const contestedTop = d.contested.slice(0, 3).map((f) => f.name).join(', ');
+      const section = makeEl('section', { class: 'narrative fade-in', style: 'animation-delay: 100ms;' }, [
+        makeEl('p', { class: 'lede' }, [
+          'The brief in ', makeEl('code', { text: 'prompts.md' }), ' is unusually disciplined. Generate the filters. Reorganize them. Then judge them ',
+          'at the filter level, not the image level, using all three inputs together: chart, comic, photo. That last constraint matters. It turns a style exercise into a robustness test.'
+        ]),
+        makeEl('p', {}, [
+          'And yet the first pass through the results reads like a courtroom transcript. Some filters inspire broad agreement. ',
+          'Others split the room so completely that you can infer the evaluator’s theory of art from the disagreement itself.'
+        ]),
+        makeEl('p', { class: 'pull', html: `Consensus (raw mean) puts <strong>${escapeHtml(d.rankedRaw[0].name)}</strong> first. The three reports most sharply contest <strong>${escapeHtml(contestedTop)}</strong>.` }),
+        makeEl('p', {}, [
+          'The recurring pattern is this: the same image can be judged as a triumph of medium fidelity, a failure of readability, and a statistically implausible simulation depending on what the judge privileges.'
+        ]),
+      ]);
+      return section;
+    }
+
+    function renderPromptAndMethodSection() {
+      const wrapper = makeEl('section', { class: 'two-col fade-in', style: 'animation-delay: 140ms;' });
+      wrapper.append(renderPromptPanel());
+      wrapper.append(renderMethodPanel());
+      return wrapper;
+    }
+
+    function renderPromptPanel() {
+      const p = state.prompts || UI.fallbackPrompts;
+      const panel = makeEl('section', { class: 'panel' });
+      panel.append(makeEl('div', { class: 'panel-head' }, [
+        makeEl('div', {}, [
+          makeEl('div', { class: 'kicker', text: 'Act I / The Assignment' }),
+          makeEl('h2', { text: 'One Prompt, Three Judges' }),
+        ]),
+        makeEl('div', { class: 'badge', text: 'Source: prompts.md' }),
+      ]));
+
+      panel.append(makeEl('p', {}, [
+        'The prompts do two important things. First, they encourage creative filter construction as a recipe, not a single effect. Second, they ask each model to evaluate like an exhibition judge, and to do it ',
+        'with process transparency. In other words: perform taste, but show your work.'
+      ]));
+
+      const cards = makeEl('div', { class: 'prompt-cards' });
+
+      const generationCard = makeEl('div', { class: 'prompt-card' }, [
+        makeEl('h3', { text: 'Generation Prompt (excerpt)' }),
+        makeEl('div', { class: 'quote-box' }, [makeEl('pre', { text: p.generation })]),
+      ]);
+      cards.append(generationCard);
+
+      const evalCard = makeEl('div', { class: 'prompt-card' }, [
+        makeEl('h3', { text: 'Evaluation Prompt (shared core, excerpt)' }),
+        makeEl('div', { class: 'quote-box' }, [makeEl('pre', { text: p.evaluation })]),
+        makeEl('div', { class: 'badges' }, [
+          makeEl('span', { class: 'badge' }, [makeEl('span', { class: 'dot gpt' }), 'GPT output: gpt-evaluation.md']),
+          makeEl('span', { class: 'badge' }, [makeEl('span', { class: 'dot claude' }), 'Claude output: sonnet-evaluation.md']),
+          makeEl('span', { class: 'badge' }, [makeEl('span', { class: 'dot gemini' }), 'Gemini output: gemini-evaluation.md']),
+        ]),
+      ]);
+      cards.append(evalCard);
+
+      panel.append(cards);
+      panel.append(makeEl('div', { class: 'insight-band' }, [
+        makeEl('strong', { text: 'Why this matters: ' }),
+        'The prompt standardizes the task more than the taste. It equalizes the courtroom procedure, not the jury psychology.'
+      ]));
+
+      return panel;
+    }
+
+    function renderMethodPanel() {
+      const panel = makeEl('section', { class: 'panel' });
+      panel.append(makeEl('div', { class: 'panel-head' }, [
+        makeEl('div', {}, [
+          makeEl('div', { class: 'kicker', text: 'Act II / How They Looked' }),
+          makeEl('h2', { text: 'Same Gallery, Different Instruments' }),
+        ]),
+        makeEl('div', { class: 'badge', text: 'Sources: *-evaluation.md + evaluation.json' }),
+      ]));
+
+      panel.append(makeEl('p', {}, [
+        'The most consequential difference is not the prose style. It is the measurement frame. GPT and Claude publish weighted rubrics with criterion scores. Gemini defines criteria in prose but outputs one score per filter, backed by automated image statistics.'
+      ]));
+
+      const methods = makeEl('div', { class: 'method-cards' });
+      for (const ev of UI.evaluatorOrder) {
+        const meta = state.raw.evaluators[ev] || {};
+        const card = makeEl('div', { class: 'method-card' });
+        card.append(makeEl('h3', {}, [makeEl('span', { class: `dot ${ev}` }), ` ${UI.evaluatorLabels[ev]}`]));
+        card.append(makeEl('div', { class: 'mono', text: (meta.model || meta.displayName || UI.evaluatorLong[ev]) }));
+        const ul = makeEl('ul');
+        for (const line of UI.evaluatorMethodNotes[ev]) {
+          ul.append(makeEl('li', { text: line }));
+        }
+        card.append(ul);
+        if (meta.weights) {
+          const entries = Object.entries(meta.weights);
+          const wlist = makeEl('div', { class: 'weight-list' });
+          for (const [key, weight] of entries) {
+            const row = makeEl('div', { class: 'weight-row' });
+            const label = makeEl('div', { class: 'label', title: key, text: key });
+            const bar = makeEl('div', { class: `weight-bar ${ev === 'claude' ? 'claude' : ''}` }, [makeEl('span')]);
+            bar.firstChild.style.width = `${Math.round(Number(weight) * 100)}%`;
+            const value = makeEl('div', { class: 'value', text: `${Math.round(Number(weight) * 100)}%` });
+            row.append(label, bar, value);
+            wlist.append(row);
+          }
+          card.append(wlist);
+        }
+        const stats = state.derived.evaluatorStats[ev];
+        card.append(makeEl('div', { class: 'badges' }, [
+          makeEl('span', { class: 'badge', text: `mean ${fmtScore(stats.mean)}` }),
+          makeEl('span', { class: 'badge', text: `range ${fmtScore(stats.range)}` }),
+          makeEl('span', { class: 'badge', text: `sd ${fmtScore(stats.sd)}` }),
+        ]));
+        methods.append(card);
+      }
+      panel.append(methods);
+
+      const criteriaStats = makeEl('div', { class: 'mini-grid', style: 'grid-template-columns: 1fr 1fr; margin-top: 10px;' });
+      criteriaStats.append(renderCriterionSummaryCard('GPT Mean Criterion Scores', state.derived.gptCriteriaStats, 'gpt'));
+      criteriaStats.append(renderCriterionSummaryCard('Claude Mean Criterion Scores', state.derived.claudeCriteriaStats, 'claude'));
+      panel.append(criteriaStats);
+
+      return panel;
+    }
+
+    function renderCriterionSummaryCard(title, stats, evaluator) {
+      const card = makeEl('div', { class: 'mini-card' });
+      card.append(makeEl('h3', { text: title }));
+      for (const row of stats) {
+        const wrap = makeEl('div', { class: 'criterion-row' });
+        wrap.append(makeEl('div', { class: 'name', title: row.key, text: row.key }));
+        const meter = makeEl('div', { class: `criterion-meter ${evaluator === 'claude' ? 'claude' : ''}` }, [makeEl('span')]);
+        meter.firstChild.style.width = `${Math.round(row.mean * 100)}%`;
+        wrap.append(meter);
+        wrap.append(makeEl('div', { class: 'criterion-value', text: `${fmtScore(row.mean)} mean` }));
+        card.append(wrap);
+      }
+      return card;
+    }
+
+    function renderDistributionNarrative() {
+      const d = state.derived;
+      const g = d.evaluatorStats.gpt;
+      const c = d.evaluatorStats.claude;
+      const m = d.evaluatorStats.gemini;
+      return makeEl('section', { class: 'narrative fade-in', style: 'animation-delay: 180ms;' }, [
+        makeEl('p', {}, [
+          'Before looking at winners, look at the judges. GPT scores almost everything in a narrow band, from ',
+          makeEl('strong', { text: fmtScore(g.min) }), ' to ', makeEl('strong', { text: fmtScore(g.max) }), '. Claude and Gemini spread the field much wider. ',
+          'That is not a small cosmetic difference. It changes what a tie means, what an outlier means, and how much confidence we should place in a raw average.'
+        ]),
+        makeEl('p', { class: 'pull', html: `GPT's total spread is <strong>${fmtScore(g.range)}</strong>. Claude's is <strong>${fmtScore(c.range)}</strong>. Gemini's is <strong>${fmtScore(m.range)}</strong>. Same gallery. Different dynamic range.` }),
+        makeEl('p', {}, [
+          'In a human jury room, this is the judge who says "almost everything here has merit" sitting next to the judge who says "half of this fails the brief." Both can be serious. They are just calibrated differently.'
+        ]),
+      ]);
+    }
+
+    function renderDistributionSection() {
+      const panel = makeEl('section', { class: 'panel fade-in', style: 'animation-delay: 220ms;' });
+      panel.append(makeEl('div', { class: 'panel-head' }, [
+        makeEl('div', {}, [
+          makeEl('div', { class: 'kicker', text: 'Distribution' }),
+          makeEl('h2', { text: 'Score Compression Is the First Story' }),
+        ]),
+        makeEl('div', { class: 'badge', text: 'Interactive: hover dots, click to inspect filter' }),
+      ]));
+      panel.append(makeEl('p', { class: 'headline-note', text: 'Each row is one judge. Each dot is one filter. The selected filter is outlined; the vertical line marks that judge’s mean.' }));
+      panel.append(makeEl('div', { class: 'chart-wrap', id: 'distribution-chart' }));
+      setTimeout(renderDistributionChart, 0);
+      return panel;
+    }
+
+    function renderDistributionChart() {
+      const host = document.getElementById('distribution-chart');
+      if (!host) return;
+      host.innerHTML = '';
+      const w = host.clientWidth || 900;
+      const h = 280;
+      const margin = { top: 22, right: 18, bottom: 34, left: 86 };
+      const innerW = w - margin.left - margin.right;
+      const innerH = h - margin.top - margin.bottom;
+      const rowH = innerH / UI.evaluatorOrder.length;
+      const x = (v) => margin.left + v * innerW;
+      const yCenter = (i) => margin.top + rowH * i + rowH / 2;
+
+      const svg = svgEl(w, h);
+
+      for (let t = 0; t <= 10; t += 1) {
+        const xv = t / 10;
+        const X = x(xv);
+        svg.append(lineEl(X, margin.top - 4, X, h - margin.bottom, { class: 'gridline' }));
+        svg.append(textEl(X, h - 10, t === 10 ? '1.0' : (t / 10).toFixed(1), { class: 'axis', 'text-anchor': 'middle' }));
+      }
+
+      svg.append(textEl(margin.left, 14, 'normalized score', { class: 'svg-note' }));
+
+      UI.evaluatorOrder.forEach((ev, i) => {
+        const rows = state.derived.evalsByEvaluator[ev];
+        const stats = state.derived.evaluatorStats[ev];
+        const yc = yCenter(i);
+        const top = yc - rowH * 0.32;
+        const bottom = yc + rowH * 0.32;
+        svg.append(rectEl(x(stats.min), top, Math.max(2, x(stats.max) - x(stats.min)), bottom - top, {
+          fill: 'rgba(19,16,13,0.04)', stroke: 'rgba(19,16,13,0.06)', rx: 6,
+        }));
+        svg.append(lineEl(x(stats.mean), top - 8, x(stats.mean), bottom + 8, {
+          stroke: UI.colors[ev], 'stroke-width': 1.4,
+        }));
+
+        svg.append(textEl(8, yc + 4, UI.evaluatorLabels[ev], { class: 'axis', fill: UI.colors[ev] }));
+        svg.append(textEl(margin.left - 8, yc + 4, `${fmtScore(stats.min)}-${fmtScore(stats.max)}`, {
+          class: 'axis', 'text-anchor': 'end'
+        }));
+
+        const sorted = [...rows].sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
+        sorted.forEach((row, idx) => {
+          const cx = x(row.score);
+          const jitter = ((idx % 5) - 2) * 4;
+          const cy = yc + jitter;
+          const selected = row['filter-id'] === state.selectedFilterId;
+          const circle = circleEl(cx, cy, selected ? 5.2 : 3.8, {
+            fill: UI.colors[ev], opacity: selected ? 0.95 : 0.72,
+            stroke: selected ? '#fff' : 'none', 'stroke-width': selected ? 1.4 : 0,
+            cursor: 'pointer',
+          });
+          attachPointEvents(circle, row['filter-id'], () => [
+            row.name,
+            `${UI.evaluatorLabels[ev]}: ${fmtScore(row.score)}${row.rank ? ` (rank ${row.rank})` : ''}`,
+          ]);
+          svg.append(circle);
+        });
+      });
+
+      host.append(svg);
+    }
+
+    function renderConsensusNarrative() {
+      const d = state.derived;
+      const topRaw = d.rankedRaw[0];
+      const topZ = d.rankedZ[0];
+      const pair = Object.values(d.pairwise).sort((a, b) => a.pearson - b.pearson)[0];
+      return makeEl('section', { class: 'narrative fade-in', style: 'animation-delay: 260ms;' }, [
+        makeEl('p', {}, [
+          'Now comes the question everyone asks too early: so who won? The answer depends on whether you average raw scores or first normalize each judge’s severity.'
+        ]),
+        makeEl('p', {}, [
+          'On a raw mean, the leader is ', makeEl('strong', { text: topRaw.name }), '. After adjusting for each evaluator’s scoring spread (a simple z-score normalization), ',
+          'the leader is ', makeEl('strong', { text: topZ.name }), '. In this dataset they happen to agree on the headline. The interesting change is lower in the table: filters leap or fall when we stop treating a stingy judge and a generous judge as numerically identical.'
+        ]),
+        makeEl('p', { class: 'pull', html: `${UI.evaluatorLabels[pair.a]} and ${UI.evaluatorLabels[pair.b]} barely move together (r = <strong>${fmtNum(pair.pearson, 3)}</strong>). If you collapse them into one number without adjustment, you are averaging philosophies, not just scores.` }),
+      ]);
+    }
+
+    function renderConsensusSection() {
+      const panel = makeEl('section', { class: 'panel fade-in', style: 'animation-delay: 300ms;' });
+      panel.append(makeEl('div', { class: 'panel-head' }, [
+        makeEl('div', {}, [
+          makeEl('div', { class: 'kicker', text: 'Ranking' }),
+          makeEl('h2', { text: 'Consensus, Two Ways' }),
+        ]),
+        makeEl('div', { class: 'badge', text: 'Interactive: switch consensus method' }),
+      ]));
+
+      const controls = makeEl('div', { class: 'controls' });
+      const seg = makeEl('div', { class: 'segmented', role: 'group', 'aria-label': 'Consensus method' });
+      const buttons = [
+        { key: 'raw', label: 'Raw Mean' },
+        { key: 'z', label: 'Z-Adjusted Mean' },
+      ];
+      for (const b of buttons) {
+        const btn = makeEl('button', {
+          type: 'button',
+          text: b.label,
+          'aria-pressed': String(state.consensusMode === b.key),
+          onclick: () => {
+            state.consensusMode = b.key;
+            renderConsensusSectionContent();
+            renderBraidChart();
+          },
+        });
+        btn.dataset.mode = b.key;
+        seg.append(btn);
+      }
+      controls.append(seg);
+      controls.append(makeEl('span', { class: 'badge', text: 'Bars = consensus metric; dots = individual judge scores' }));
+      panel.append(controls);
+
+      const callouts = makeEl('div', { class: 'callout-grid', id: 'consensus-callouts' });
+      panel.append(callouts);
+
+      const bodyGrid = makeEl('div', { class: 'two-col', style: 'margin-top: 10px;' });
+      bodyGrid.append(makeEl('div', { class: 'chart-wrap', id: 'consensus-chart' }));
+      bodyGrid.append(makeEl('div', { id: 'consensus-list' }));
+      panel.append(bodyGrid);
+
+      panel._content = { callouts };
+      setTimeout(renderConsensusSectionContent, 0);
+      return panel;
+    }
+
+    function currentConsensusRows() {
+      const d = state.derived;
+      const rows = state.consensusMode === 'raw' ? d.rankedRaw : d.rankedZ;
+      return rows;
+    }
+
+    function renderConsensusSectionContent() {
+      const panel = [...document.querySelectorAll('.panel')].find((p) => p.querySelector('#consensus-chart'));
+      if (!panel) return;
+      panel.querySelectorAll('.segmented button').forEach((btn) => {
+        btn.setAttribute('aria-pressed', String(btn.dataset.mode === state.consensusMode));
+      });
+
+      const rows = currentConsensusRows();
+      const top12 = rows.slice(0, 12);
+      const biggestMoves = computeConsensusMoves();
+      const callouts = panel.querySelector('#consensus-callouts');
+      callouts.innerHTML = '';
+      const topRow = rows[0];
+      const runnerUp = rows[1];
+      const moveRow = biggestMoves[0];
+      const contestedHigh = state.derived.contested.find((f) => top12.some((t) => t['filter-id'] === f['filter-id'])) || state.derived.contested[0];
+
+      const c1 = makeEl('div', { class: 'callout' }, [
+        makeEl('div', { class: 'kicker', text: 'Leader' }),
+        makeEl('h3', { text: topRow.name }),
+        makeEl('div', { class: 'metric', text: state.consensusMode === 'raw' ? fmtScore(topRow.scoreMean) : fmtNum(topRow.zMean, 2) }),
+        makeEl('div', { class: 'sub', text: state.consensusMode === 'raw' ? `raw mean across 3 judges` : `z-adjusted mean across 3 judges` }),
+      ]);
+      const c2 = makeEl('div', { class: 'callout' }, [
+        makeEl('div', { class: 'kicker', text: 'Runner-Up Gap' }),
+        makeEl('h3', { text: `${topRow.name} vs ${runnerUp.name}` }),
+        makeEl('div', { class: 'metric', text: state.consensusMode === 'raw' ? fmtNum(topRow.scoreMean - runnerUp.scoreMean, 3) : fmtNum(topRow.zMean - runnerUp.zMean, 2) }),
+        makeEl('div', { class: 'sub', text: 'Small gap = stable top tier, not runaway winner' }),
+      ]);
+      const c3 = makeEl('div', { class: 'callout' }, [
+        makeEl('div', { class: 'kicker', text: 'Largest Rank Shift' }),
+        makeEl('h3', { text: moveRow.name }),
+        makeEl('div', { class: 'metric', text: `${moveRow.rawRank} -> ${moveRow.zRank}` }),
+        makeEl('div', { class: 'sub', text: `${moveRow.delta > 0 ? 'Rises' : 'Falls'} ${Math.abs(moveRow.delta)} places when adjusting judge severity` }),
+      ]);
+      [c1, c2, c3].forEach((c) => callouts.append(c));
+
+      renderConsensusChart(top12);
+      renderConsensusList(rows);
+    }
+
+    function computeConsensusMoves() {
+      const rawRank = Object.fromEntries(state.derived.rankedRaw.map((r, i) => [r['filter-id'], i + 1]));
+      const zRank = Object.fromEntries(state.derived.rankedZ.map((r, i) => [r['filter-id'], i + 1]));
+      return state.derived.filterSummaries
+        .map((f) => ({ ...f, rawRank: rawRank[f['filter-id']], zRank: zRank[f['filter-id']], delta: rawRank[f['filter-id']] - zRank[f['filter-id']] }))
+        .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta) || a.name.localeCompare(b.name));
+    }
+
+    function renderConsensusChart(rows) {
+      const host = document.getElementById('consensus-chart');
+      if (!host) return;
+      host.innerHTML = '';
+      const w = host.clientWidth || 540;
+      const h = 28 + rows.length * 28 + 28;
+      const margin = { top: 18, right: 14, bottom: 18, left: 170 };
+      const innerW = w - margin.left - margin.right;
+      const innerH = h - margin.top - margin.bottom;
+      const rowH = innerH / rows.length;
+      const metric = (f) => state.consensusMode === 'raw' ? f.scoreMean : f.zMean;
+      const values = rows.map(metric);
+      const minVal = Math.min(...values, state.consensusMode === 'raw' ? 0 : -1.2);
+      const maxVal = Math.max(...values, state.consensusMode === 'raw' ? 1 : 1.6);
+      const x = (v) => margin.left + ((v - minVal) / (maxVal - minVal || 1)) * innerW;
+      const y = (i) => margin.top + i * rowH + rowH / 2;
+      const svg = svgEl(w, h);
+
+      if (state.consensusMode === 'z') {
+        const zeroX = x(0);
+        svg.append(lineEl(zeroX, margin.top - 4, zeroX, h - margin.bottom, { stroke: 'rgba(19,16,13,0.22)', 'stroke-width': 1 }));
+        svg.append(textEl(zeroX + 4, margin.top - 6, '0', { class: 'axis' }));
+      }
+
+      rows.forEach((f, i) => {
+        const yc = y(i);
+        const startX = x(state.consensusMode === 'raw' ? 0 : Math.min(0, metric(f)));
+        const endX = x(metric(f));
+        const selected = f['filter-id'] === state.selectedFilterId;
+        const bar = rectEl(Math.min(startX, endX), yc - 6, Math.max(2, Math.abs(endX - startX)), 12, {
+          fill: selected ? 'rgba(14,116,144,0.28)' : 'rgba(19,16,13,0.08)',
+          rx: 5,
+        });
+        svg.append(bar);
+
+        const stroke = selected ? '#0e7490' : 'rgba(19,16,13,0.2)';
+        const dot = circleEl(endX, yc, selected ? 5.5 : 4.2, {
+          fill: selected ? '#0e7490' : '#fffaf0',
+          stroke,
+          'stroke-width': selected ? 1.8 : 1.2,
+          cursor: 'pointer',
+        });
+        attachPointEvents(dot, f['filter-id'], () => [
+          f.name,
+          state.consensusMode === 'raw' ? `raw mean ${fmtScore(f.scoreMean)}` : `z-mean ${fmtNum(f.zMean, 2)}`,
+          `range ${fmtScore(f.scoreRange)} | rank spread ${f.rankSpread}`,
+        ]);
+        svg.append(dot);
+
+        const label = textEl(margin.left - 8, yc + 4, `${i + 1}. ${f.name}`, {
+          class: 'axis', 'text-anchor': 'end', fill: selected ? UI.colors.gpt : '#574d40',
+          cursor: 'pointer',
+        });
+        label.addEventListener('click', () => selectFilter(f['filter-id']));
+        label.addEventListener('mousemove', (evt) => showTooltip(evt, [f.name, `Click to inspect case file` ]));
+        label.addEventListener('mouseleave', hideTooltip);
+        svg.append(label);
+
+        UI.evaluatorOrder.forEach((ev) => {
+          const cx = x(f.scoreMap[ev]);
+          const c = circleEl(cx, yc, 2.9, {
+            fill: UI.colors[ev], opacity: 0.85,
+            cursor: 'pointer',
+          });
+          attachPointEvents(c, f['filter-id'], () => [
+            f.name,
+            `${UI.evaluatorLabels[ev]} ${fmtScore(f.scoreMap[ev])}`,
+          ]);
+          svg.append(c);
+        });
+      });
+
+      const tickCount = state.consensusMode === 'raw' ? 5 : 6;
+      for (let i = 0; i <= tickCount; i += 1) {
+        const v = minVal + (i / tickCount) * (maxVal - minVal);
+        const X = x(v);
+        svg.append(lineEl(X, h - margin.bottom, X, h - margin.bottom + 4, { stroke: UI.colors.line }));
+        svg.append(textEl(X, h - 2, state.consensusMode === 'raw' ? v.toFixed(2) : v.toFixed(1), { class: 'axis', 'text-anchor': 'middle' }));
+      }
+
+      host.append(svg);
+    }
+
+    function renderConsensusList(rows) {
+      const host = document.getElementById('consensus-list');
+      if (!host) return;
+      host.innerHTML = '';
+      host.append(makeEl('div', { class: 'panel-head', style: 'margin: 0 0 6px 0;' }, [
+        makeEl('h3', { text: state.consensusMode === 'raw' ? 'Full Ranking (Raw Mean)' : 'Full Ranking (Z-Adjusted Mean)' }),
+        makeEl('span', { class: 'kicker', text: 'click a row to inspect' }),
+      ]));
+      const list = makeEl('div', { class: 'tableish' });
+      rows.forEach((f, idx) => {
+        const metricVal = state.consensusMode === 'raw' ? f.scoreMean : f.zMean;
+        const row = makeEl('button', { class: `row-btn${f['filter-id'] === state.selectedFilterId ? ' is-selected' : ''}`, type: 'button' });
+        row.append(makeEl('div', { class: 'row-rank', text: String(idx + 1) }));
+
+        const mid = makeEl('div');
+        mid.append(makeEl('div', { class: 'row-title', text: f.name }));
+        const spark = makeEl('div', { class: 'sparkline' });
+        const fill = makeEl('div', { class: 'fill' });
+        fill.style.width = `${Math.round((state.consensusMode === 'raw' ? f.scoreMean : (f.zMean + 1.4) / 3) * 100)}%`;
+        spark.append(fill);
+        UI.evaluatorOrder.forEach((ev) => {
+          const marker = makeEl('span', { class: 'marker', title: `${UI.evaluatorLabels[ev]} ${fmtScore(f.scoreMap[ev])}` });
+          marker.style.left = `${Math.round(f.scoreMap[ev] * 100)}%`;
+          marker.style.background = UI.colors[ev];
+          spark.append(marker);
+        });
+        mid.append(spark);
+        row.append(mid);
+
+        row.append(makeEl('div', { class: 'row-metric', html: `${state.consensusMode === 'raw' ? fmtScore(metricVal) : fmtNum(metricVal, 2)}<br><span style="color:var(--muted)">range ${fmtScore(f.scoreRange)}</span>` }));
+        row.addEventListener('click', () => selectFilter(f['filter-id']));
+        row.addEventListener('mousemove', (evt) => showTooltip(evt, [f.name, `rank spread ${f.rankSpread}`, `gpt ${fmtScore(f.scoreMap.gpt)} | claude ${fmtScore(f.scoreMap.claude)} | gemini ${fmtScore(f.scoreMap.gemini)}`]));
+        row.addEventListener('mouseleave', hideTooltip);
+        list.append(row);
+      });
+      host.append(list);
+    }
+
+    function renderDisagreementNarrative() {
+      const cmyk = state.derived.filterSummaries.find((f) => f['filter-id'] === 'cmyk-separation');
+      const thermal = state.derived.filterSummaries.find((f) => f['filter-id'] === 'thermal-scan');
+      const terminal = state.derived.filterSummaries.find((f) => f['filter-id'] === 'terminal-matrix');
+      return makeEl('section', { class: 'narrative fade-in', style: 'animation-delay: 340ms;' }, [
+        makeEl('p', {}, [
+          'The best way to see evaluator philosophy is to look where the lines cross. ',
+          makeEl('strong', { text: 'CMYK Separation' }), ' is a perfect example: Claude scores it ', makeEl('strong', { text: fmtScore(cmyk.scoreMap.claude) }), ', Gemini scores it ', makeEl('strong', { text: fmtScore(cmyk.scoreMap.gemini) }), ', and GPT lands in the middle at ', makeEl('strong', { text: fmtScore(cmyk.scoreMap.gpt) }), '. Same output. Three different definitions of success.'
+        ]),
+        makeEl('p', {}, [
+          'Then there is ', makeEl('strong', { text: 'Thermal Scan' }), ', a consensus favorite if you trust human-like visual judgment (GPT ', fmtScore(thermal.scoreMap.gpt), ', Claude ', fmtScore(thermal.scoreMap.claude), '), but a miss for Gemini (', fmtScore(thermal.scoreMap.gemini), '). ',
+          'Gemini’s own report explains why: it leans on color statistics, and the average color can make a thermal image look "too grey" even when the local structure reads perfectly to a viewer.'
+        ]),
+        makeEl('p', { class: 'pull', html: `And the strangest split: <strong>${terminal.name}</strong> is rank #1 for GPT and effectively #1 for Gemini, but #${terminal.ranks.claude} for Claude. That is not noise. That is a theory-of-evaluation mismatch.` }),
+      ]);
+    }
+
+    function renderBraidAndScatterSection() {
+      const section = makeEl('section', { class: 'two-col fade-in', style: 'animation-delay: 380ms;' });
+      section.append(renderBraidPanel());
+      section.append(renderScatterPanel());
+      return section;
+    }
+
+    function renderBraidPanel() {
+      const panel = makeEl('section', { class: 'panel' });
+      panel.append(makeEl('div', { class: 'panel-head' }, [
+        makeEl('div', {}, [
+          makeEl('div', { class: 'kicker', text: 'Rank Braid' }),
+          makeEl('h2', { text: 'Where the Jury Splits' }),
+        ]),
+        makeEl('div', { class: 'badge', text: 'Interactive: hover/click lines' }),
+      ]));
+      const controls = makeEl('div', { class: 'controls' });
+      const seg = makeEl('div', { class: 'segmented', role: 'group', 'aria-label': 'Braid sort mode' });
+      [
+        { key: 'contested', label: 'Most Contested' },
+        { key: 'leaders', label: 'Consensus Leaders' },
+      ].forEach((opt) => {
+        const btn = makeEl('button', {
+          type: 'button',
+          text: opt.label,
+          'aria-pressed': String(state.braidMode === opt.key),
+          onclick: () => {
+            state.braidMode = opt.key;
+            renderBraidChart();
+          },
+        });
+        btn.dataset.mode = opt.key;
+        seg.append(btn);
+      });
+      controls.append(seg);
+      controls.append(makeEl('span', { class: 'badge', text: 'Columns are evaluator ranks (1 is top)' }));
+      panel.append(controls);
+      panel.append(makeEl('div', { class: 'chart-wrap', id: 'braid-chart' }));
+      panel.append(makeEl('div', { class: 'legend-inline' }, [
+        makeEl('span', { class: 'legend-item' }, [makeEl('span', { class: 'dot gpt' }), 'GPT endpoint']),
+        makeEl('span', { class: 'legend-item' }, [makeEl('span', { class: 'dot claude' }), 'Claude endpoint']),
+        makeEl('span', { class: 'dot gemini' }), ' Gemini endpoint',
+      ]));
+      setTimeout(renderBraidChart, 0);
+      return panel;
+    }
+
+    function getBraidRows() {
+      if (state.braidMode === 'leaders') return currentConsensusRows().slice(0, 14);
+      return state.derived.contested.slice(0, 14);
+    }
+
+    function renderBraidChart() {
+      const host = document.getElementById('braid-chart');
+      if (!host) return;
+      const panel = host.closest('.panel');
+      if (panel) {
+        panel.querySelectorAll('.segmented button').forEach((btn) => {
+          btn.setAttribute('aria-pressed', String(btn.dataset.mode === state.braidMode));
+        });
+      }
+      host.innerHTML = '';
+      const rows = getBraidRows();
+      const w = host.clientWidth || 540;
+      const h = 420;
+      const margin = { top: 28, right: 16, bottom: 26, left: 16 };
+      const innerW = w - margin.left - margin.right;
+      const innerH = h - margin.top - margin.bottom;
+      const cols = UI.evaluatorOrder;
+      const xPos = (idx) => margin.left + (idx / (cols.length - 1)) * innerW;
+      const yPos = (rank) => margin.top + ((rank - 1) / 29) * innerH;
+
+      const svg = svgEl(w, h);
+
+      cols.forEach((ev, i) => {
+        const x = xPos(i);
+        svg.append(lineEl(x, margin.top - 8, x, h - margin.bottom + 4, { stroke: 'rgba(19,16,13,0.12)' }));
+        svg.append(textEl(x, 14, UI.evaluatorLabels[ev], { class: 'axis', 'text-anchor': 'middle', fill: UI.colors[ev] }));
+        svg.append(textEl(x, h - 6, 'rank', { class: 'axis', 'text-anchor': 'middle' }));
+      });
+
+      [1, 5, 10, 15, 20, 25, 30].forEach((rank) => {
+        const y = yPos(rank);
+        svg.append(lineEl(margin.left, y, w - margin.right, y, { class: 'gridline' }));
+        svg.append(textEl(0, y + 4, String(rank), { class: 'axis' }));
+      });
+
+      rows.forEach((f) => {
+        const selected = f['filter-id'] === state.selectedFilterId;
+        const d = cols.map((ev, i) => `${i === 0 ? 'M' : 'L'} ${xPos(i)} ${yPos(f.ranks[ev])}`).join(' ');
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', selected ? '#0e7490' : 'rgba(19,16,13,0.28)');
+        path.setAttribute('stroke-width', selected ? '2.8' : (1.4 + Math.min(f.rankSpread, 20) * 0.03).toFixed(2));
+        path.setAttribute('opacity', selected ? '1' : '0.55');
+        path.style.cursor = 'pointer';
+        attachPointEvents(path, f['filter-id'], () => [
+          f.name,
+          `ranks: GPT ${f.ranks.gpt}, Claude ${f.ranks.claude}, Gemini ${f.ranks.gemini}`,
+          `spread ${f.rankSpread} | score range ${fmtScore(f.scoreRange)}`,
+        ]);
+        svg.append(path);
+
+        cols.forEach((ev, i) => {
+          const c = circleEl(xPos(i), yPos(f.ranks[ev]), selected ? 4.8 : 3.1, {
+            fill: UI.colors[ev], opacity: selected ? 1 : 0.9, cursor: 'pointer',
+            stroke: selected ? '#fff' : 'none', 'stroke-width': selected ? 1.3 : 0,
+          });
+          attachPointEvents(c, f['filter-id'], () => [
+            f.name,
+            `${UI.evaluatorLabels[ev]} rank ${f.ranks[ev]} (${fmtScore(f.scoreMap[ev])})`,
+          ]);
+          svg.append(c);
+        });
+
+        const label = textEl(w - margin.right - 4, yPos(f.ranks.gemini) - 6, f.name, {
+          class: 'axis', 'text-anchor': 'end', fill: selected ? '#0e7490' : '#574d40',
+          opacity: selected ? '1' : '0.65', cursor: 'pointer'
+        });
+        label.addEventListener('click', () => selectFilter(f['filter-id']));
+        label.addEventListener('mousemove', (evt) => showTooltip(evt, [f.name, `Click to inspect case file`]));
+        label.addEventListener('mouseleave', hideTooltip);
+        svg.append(label);
+      });
+
+      host.append(svg);
+    }
+
+    function renderScatterPanel() {
+      const panel = makeEl('section', { class: 'panel' });
+      panel.append(makeEl('div', { class: 'panel-head' }, [
+        makeEl('div', {}, [
+          makeEl('div', { class: 'kicker', text: 'Agreement Plot' }),
+          makeEl('h2', { text: 'Philosophy, as a Scatterplot' }),
+        ]),
+        makeEl('div', { class: 'badge', text: 'Interactive: choose pair, click a point' }),
+      ]));
+
+      const controls = makeEl('div', { class: 'controls' });
+      const sel = makeEl('select', { class: 'select', 'aria-label': 'Evaluator pair' });
+      [
+        ['gpt-claude', 'GPT vs Claude'],
+        ['gpt-gemini', 'GPT vs Gemini'],
+        ['claude-gemini', 'Claude vs Gemini'],
+      ].forEach(([value, label]) => {
+        const opt = makeEl('option', { value, text: label });
+        if (state.scatterPair === value) opt.selected = true;
+        sel.append(opt);
+      });
+      sel.addEventListener('change', () => {
+        state.scatterPair = sel.value;
+        renderScatterChart();
+      });
+      controls.append(sel);
+      controls.append(makeEl('span', { class: 'badge', id: 'scatter-corr-badge' }));
+      controls.append(makeEl('span', { class: 'badge', text: 'dot color = disagreement range' }));
+      panel.append(controls);
+
+      panel.append(makeEl('div', { class: 'chart-wrap', id: 'scatter-chart' }));
+      panel.append(makeEl('div', { id: 'scatter-note', class: 'headline-note' }));
+
+      setTimeout(renderScatterChart, 0);
+      return panel;
+    }
+
+    function renderScatterChart() {
+      const host = document.getElementById('scatter-chart');
+      if (!host) return;
+      host.innerHTML = '';
+      const pair = state.derived.pairwise[state.scatterPair];
+      const w = host.clientWidth || 540;
+      const h = 390;
+      const margin = { top: 24, right: 16, bottom: 44, left: 52 };
+      const innerW = w - margin.left - margin.right;
+      const innerH = h - margin.top - margin.bottom;
+      const x = (v) => margin.left + v * innerW;
+      const y = (v) => margin.top + (1 - v) * innerH;
+      const svg = svgEl(w, h);
+
+      for (let t = 0; t <= 10; t += 1) {
+        const v = t / 10;
+        svg.append(lineEl(x(v), margin.top, x(v), h - margin.bottom, { class: 'gridline' }));
+        svg.append(lineEl(margin.left, y(v), w - margin.right, y(v), { class: 'gridline' }));
+        svg.append(textEl(x(v), h - 10, v.toFixed(1), { class: 'axis', 'text-anchor': 'middle' }));
+        if (t < 10) svg.append(textEl(6, y(v) + 4, v.toFixed(1), { class: 'axis' }));
+      }
+
+      svg.append(lineEl(x(0), y(0), x(1), y(1), { stroke: 'rgba(19,16,13,0.22)', 'stroke-dasharray': '5 4' }));
+      svg.append(textEl(w / 2, 14, `${UI.evaluatorLabels[pair.a]} vs ${UI.evaluatorLabels[pair.b]}`, { class: 'axis', 'text-anchor': 'middle' }));
+      svg.append(textEl(w / 2, h - 2, UI.evaluatorLabels[pair.a], { class: 'axis', 'text-anchor': 'middle', fill: UI.colors[pair.a] }));
+
+      const yLabel = textEl(14, h / 2, UI.evaluatorLabels[pair.b], { class: 'axis', fill: UI.colors[pair.b] });
+      yLabel.setAttribute('transform', `rotate(-90 14 ${h / 2})`);
+      svg.append(yLabel);
+
+      pair.points.forEach((pt) => {
+        const selected = pt.id === state.selectedFilterId;
+        const radius = selected ? 6.8 : 4.2 + pt.consensus * 1.8;
+        const hue = 14 + (1 - clamp(pt.disagreement / 0.6, 0, 1)) * 180;
+        const fill = `hsl(${hue} 68% ${selected ? 36 : 52}%)`;
+        const dot = circleEl(x(pt.x), y(pt.y), radius, {
+          fill,
+          opacity: selected ? 0.95 : 0.78,
+          stroke: selected ? '#fffaf0' : 'rgba(19,16,13,0.18)',
+          'stroke-width': selected ? 1.8 : 0.8,
+          cursor: 'pointer',
+        });
+        attachPointEvents(dot, pt.id, () => [
+          pt.name,
+          `${UI.evaluatorLabels[pair.a]} ${fmtScore(pt.x)} | ${UI.evaluatorLabels[pair.b]} ${fmtScore(pt.y)}`,
+          `disagreement range ${fmtScore(pt.disagreement)}`,
+        ]);
+        svg.append(dot);
+      });
+
+      host.append(svg);
+      const badge = document.getElementById('scatter-corr-badge');
+      if (badge) badge.textContent = `Pearson r = ${fmtNum(pair.pearson, 3)}`;
+
+      const note = document.getElementById('scatter-note');
+      if (note) {
+        const weakest = pair.points.slice().sort((a, b) => b.disagreement - a.disagreement)[0];
+        note.textContent = `Dots near the dashed diagonal indicate agreement. The pair's outliers reveal evaluative mismatch. In this view, ${weakest.name} is among the strongest examples of a split verdict.`;
+      }
+    }
+
+    function renderCaseSection() {
+      const section = makeEl('section', { class: 'two-col fade-in', style: 'animation-delay: 420ms;' });
+      section.append(renderCasePanel());
+      section.append(renderFeedbackPanel());
+      setTimeout(() => {
+        renderCasePanelContent();
+        renderFeedbackPanelContent();
+      }, 0);
+      return section;
+    }
+
+    function renderCasePanel() {
+      const panel = makeEl('section', { class: 'panel' });
+      panel.append(makeEl('div', { class: 'panel-head' }, [
+        makeEl('div', {}, [
+          makeEl('div', { class: 'kicker', text: 'Case File' }),
+          makeEl('h2', { text: 'Make the Pattern Concrete' }),
+        ]),
+        makeEl('div', { class: 'badge', text: 'Interactive: selection is shared across charts' }),
+      ]));
+      panel.append(makeEl('div', { class: 'case-shell', id: 'case-panel-content' }));
+      return panel;
+    }
+
+    function renderCasePanelContent() {
+      const host = document.getElementById('case-panel-content');
+      if (!host) return;
+      host.innerHTML = '';
+      const f = state.derived.byFilter[state.selectedFilterId];
+      const summary = state.derived.filterSummaries.find((x) => x['filter-id'] === state.selectedFilterId);
+      if (!f || !summary) return;
+
+      const head = makeEl('div', { class: 'case-head' }, [
+        makeEl('div', { class: 'case-name', text: f.name }),
+        makeEl('div', { class: 'badges' }, [
+          makeEl('span', { class: 'badge', text: `raw mean ${fmtScore(summary.scoreMean)}` }),
+          makeEl('span', { class: 'badge', text: `z-mean ${fmtNum(summary.zMean, 2)}` }),
+          makeEl('span', { class: 'badge', text: `score range ${fmtScore(summary.scoreRange)}` }),
+          makeEl('span', { class: 'badge', text: `rank spread ${summary.rankSpread}` }),
+        ]),
+      ]);
+      host.append(head);
+
+      const scores = makeEl('div', { class: 'score-strip' });
+      UI.evaluatorOrder.forEach((ev) => {
+        const row = f.evaluations[ev];
+        const tile = makeEl('div', { class: 'score-tile' });
+        tile.append(makeEl('div', { class: 'label' }, [makeEl('span', { class: `dot ${ev}` }), ` ${UI.evaluatorLabels[ev]}`]));
+        tile.append(makeEl('div', { class: 'value', text: fmtScore(row.score) }));
+        const rankText = row.rank ? `rank #${row.rank}` : `derived rank #${summary.ranks[ev]}`;
+        tile.append(makeEl('div', { class: 'rank', text: rankText }));
+        scores.append(tile);
+      });
+      host.append(scores);
+
+      const imageGrid = makeEl('div', { class: 'image-grid' });
+      ['chart', 'comic', 'photo'].forEach((kind) => {
+        const fig = makeEl('figure', { class: 'thumb' });
+        const img = makeEl('img', {
+          src: `output/${kind}-${summary['filter-id']}.webp`,
+          alt: `${kind} output for ${summary.name}`,
+          loading: 'lazy',
+        });
+        img.addEventListener('error', () => {
+          img.alt = `Missing image: output/${kind}-${summary['filter-id']}.webp`;
+        });
+        fig.append(img);
+        fig.append(makeEl('figcaption', {}, [
+          makeEl('span', { text: kind }),
+          makeEl('a', { href: `output/${kind}-${summary['filter-id']}.webp`, target: '_blank', rel: 'noopener', class: 'mono', text: 'open' }),
+        ]));
+        imageGrid.append(fig);
+      });
+      host.append(imageGrid);
+
+      const criteriaBlocks = makeEl('div', { class: 'criteria-blocks' });
+      const gptCard = renderCriteriaCard('GPT criteria', f.evaluations.gpt.criteria, 'gpt');
+      const claudeCard = renderCriteriaCard('Claude criteria', f.evaluations.claude.criteria, 'claude');
+      const geminiCard = makeEl('div', { class: 'criteria-card' }, [
+        makeEl('h4', { text: 'Gemini criteria' }),
+        makeEl('p', { text: 'Gemini provides a single numeric overall score per filter in the report; the narrative critique carries the nuance.' }),
+        makeEl('div', { class: 'badges' }, [
+          makeEl('span', { class: 'badge' }, [makeEl('span', { class: 'dot gemini' }), ` Overall ${fmtScore(f.evaluations.gemini.score)}`]),
+          makeEl('span', { class: 'badge', text: f.evaluations.gemini['aesthetic-goal'] || 'Aesthetic goal not parsed' }),
+        ]),
+      ]);
+      criteriaBlocks.append(gptCard, claudeCard, geminiCard);
+      host.append(criteriaBlocks);
+
+      host.append(makeEl('div', { class: 'insight-band', id: 'case-insight' }, [
+        makeEl('strong', { text: 'Detective note: ' }),
+        caseInsight(summary),
+      ]));
+    }
+
+    function caseInsight(summary) {
+      const vals = UI.evaluatorOrder.map((ev) => ({ ev, score: summary.scoreMap[ev], rank: summary.ranks[ev] }));
+      const sorted = [...vals].sort((a, b) => b.score - a.score);
+      const hi = sorted[0];
+      const lo = sorted[sorted.length - 1];
+      const spread = summary.scoreRange;
+      if (spread >= 0.45) {
+        return `${UI.evaluatorLabels[hi.ev]} and ${UI.evaluatorLabels[lo.ev]} differ by ${fmtScore(spread)} on this filter. That is large enough to suggest rubric mismatch, not just scoring noise.`;
+      }
+      if (summary.scoreSd < 0.06) {
+        return `This is a rare near-consensus filter: the three evaluators cluster tightly (sd ${fmtScore(summary.scoreSd)}), even though their global scoring ranges differ.`;
+      }
+      return `The disagreement here is moderate, not extreme. The interesting part is where the ranks land: GPT #${summary.ranks.gpt}, Claude #${summary.ranks.claude}, Gemini #${summary.ranks.gemini}.`;
+    }
+
+    function renderCriteriaCard(title, criteria, evaluator) {
+      const entries = Object.entries(criteria || {});
+      const card = makeEl('div', { class: 'criteria-card' });
+      card.append(makeEl('h4', { text: title }));
+      entries.forEach(([name, value]) => {
+        const row = makeEl('div', { class: 'criterion-row' });
+        row.append(makeEl('div', { class: 'name', title: name, text: name }));
+        const meter = makeEl('div', { class: `criterion-meter ${evaluator === 'claude' ? 'claude' : ''}` }, [makeEl('span')]);
+        meter.firstChild.style.width = `${Math.round(Number(value) * 100)}%`;
+        row.append(meter);
+        row.append(makeEl('div', { class: 'criterion-value', text: fmtScore(value) }));
+        card.append(row);
+      });
+      return card;
+    }
+
+    function renderFeedbackPanel() {
+      const panel = makeEl('section', { class: 'panel' });
+      panel.append(makeEl('div', { class: 'panel-head' }, [
+        makeEl('div', {}, [
+          makeEl('div', { class: 'kicker', text: 'Witness Statements' }),
+          makeEl('h2', { text: 'How the Judges Explain Themselves' }),
+        ]),
+        makeEl('div', { class: 'badge', text: 'Feedback excerpts from evaluation.json' }),
+      ]));
+      panel.append(makeEl('div', { class: 'feedback-stack', id: 'feedback-panel-content' }));
+      return panel;
+    }
+
+    function renderFeedbackPanelContent() {
+      const host = document.getElementById('feedback-panel-content');
+      if (!host) return;
+      host.innerHTML = '';
+      const f = state.derived.byFilter[state.selectedFilterId];
+      if (!f) return;
+
+      UI.evaluatorOrder.forEach((ev) => {
+        const row = f.evaluations[ev];
+        const card = makeEl('article', { class: 'feedback-card' });
+        card.append(makeEl('header', {}, [
+          makeEl('h4', {}, [makeEl('span', { class: `dot ${ev}` }), ` ${UI.evaluatorLabels[ev]}`]),
+          makeEl('div', { class: 'meta', text: `score ${fmtScore(row.score)}${row.rank ? ` | rank #${row.rank}` : ''}` }),
+        ]));
+
+        const excerpt = trimmedFeedback(row.feedback, ev);
+        card.append(makeEl('div', { class: 'body', html: mdToHtml(excerpt) }));
+        host.append(card);
+      });
+
+      host.append(makeEl('div', { class: 'insight-band' }, [
+        makeEl('strong', { text: 'Reading tip: ' }),
+        'Claude usually gives the longest curatorial rationale, GPT gives the cleanest criterion-linked diagnosis, and Gemini often reveals what its image statistics are anchoring on (palette, contrast, color-count, dominant hue).'
+      ]));
+    }
+
+    function trimmedFeedback(feedback, evaluator) {
+      if (!feedback) return '';
+      const text = feedback.trim();
+      if (text.length <= 2200) return text;
+      if (evaluator === 'gemini') {
+        return text.slice(0, 1800) + '\n\n...';
+      }
+      const chunks = text.split(/\n\n/);
+      const out = [];
+      let count = 0;
+      for (const chunk of chunks) {
+        if (count + chunk.length > 1900) break;
+        out.push(chunk);
+        count += chunk.length + 2;
+      }
+      return `${out.join('\n\n')}\n\n...`;
+    }
+
+    function renderImplicationsSection() {
+      const d = state.derived;
+      const weakestPair = Object.values(d.pairwise).sort((a, b) => a.pearson - b.pearson)[0];
+      const strongestConsensus = d.consensus.filter((f) => f.scoreMean > 0.72).slice(0, 5).map((f) => f.name);
+      const section = makeEl('section', { class: 'panel fade-in', style: 'animation-delay: 460ms;' });
+      section.append(makeEl('div', { class: 'panel-head' }, [
+        makeEl('div', {}, [
+          makeEl('div', { class: 'kicker', text: 'Act III / So What' }),
+          makeEl('h2', { text: 'What This Evaluation Actually Teaches' }),
+        ]),
+        makeEl('div', { class: 'badge', text: 'With caveats' }),
+      ]));
+
+      section.append(makeEl('div', { class: 'narrative' }, [
+        makeEl('p', {}, [
+          'The headline is not simply that ', makeEl('strong', { text: d.rankedRaw[0].name }), ' looks good. It is that the evaluation protocol is already rich enough to expose different aesthetic doctrines. ',
+          'Claude and GPT largely behave like judges inspecting craft plus cross-input performance. Gemini behaves more like a critic with instrumentation, which is powerful when medium fidelity is the question and brittle when local structure matters more than global statistics.'
+        ]),
+        makeEl('p', {}, [
+          'That is why the disagreement is useful. ', UI.evaluatorLabels[weakestPair.a], ' vs ', UI.evaluatorLabels[weakestPair.b], ' (r = ', fmtNum(weakestPair.pearson, 3), ') is not a failure of the experiment. It is the experiment revealing the hidden variables.'
+        ]),
+        makeEl('p', { class: 'pull', html: `If you need a shortlist for a talk demo, start with the stable stars (<strong>${escapeHtml(strongestConsensus.join(', '))}</strong>) and then stage the courtroom drama with <strong>Thermal Scan</strong>, <strong>CMYK Separation</strong>, and <strong>Terminal Matrix</strong>. They teach the audience how evaluation frames shape outcomes.` }),
+      ]));
+
+      const caveats = makeEl('div', { class: 'two-col', style: 'margin-top: 10px;' });
+      caveats.append(makeEl('div', { class: 'mini-card' }, [
+        makeEl('h3', { text: 'Honest Caveats' }),
+        makeEl('ul', {}, [
+          makeEl('li', { text: 'Scores are normalized to 0–1 in evaluation.json, but the underlying raw scales and rubrics differ by evaluator.' }),
+          makeEl('li', { text: 'Gemini defines multiple criteria conceptually but publishes one numeric score per filter, so per-criterion numeric comparison is asymmetric.' }),
+          makeEl('li', { text: 'The page summarizes methodologies from the reports; for exact wording and nuance, read the source markdown files linked above.' }),
+        ]),
+      ]));
+      caveats.append(makeEl('div', { class: 'mini-card' }, [
+        makeEl('h3', { text: 'Next Evaluation Iteration' }),
+        makeEl('ol', {}, [
+          makeEl('li', { text: 'Require structured JSON output from each evaluator with the same criterion names plus optional model-specific criteria.' }),
+          makeEl('li', { text: 'Split scoring into two tracks: medium authenticity and utility/readability, then report both separately.' }),
+          makeEl('li', { text: 'Calibrate judges on 3–5 anchor examples before the full run to reduce avoidable scale drift.' }),
+          makeEl('li', { text: 'Add an adjudication pass where a model must explain one major disagreement using concrete image evidence.' }),
+        ]),
+      ]));
+      section.append(caveats);
+
+      section.append(makeEl('div', { class: 'footnotes mono' }, [
+        'Built from ', makeEl('a', { href: 'evaluation.json', text: 'evaluation.json' }), ', ',
+        makeEl('a', { href: 'prompts.md', text: 'prompts.md' }), ', and the three evaluator reports. ',
+        'Interactive charts are rendered client-side in vanilla SVG/JS.'
+      ]));
+      return section;
+    }
+
+    function svgEl(width, height) {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      svg.setAttribute('width', width);
+      svg.setAttribute('height', height);
+      svg.setAttribute('role', 'img');
+      return svg;
+    }
+
+    function lineEl(x1, y1, x2, y2, attrs = {}) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      el.setAttribute('x1', x1);
+      el.setAttribute('y1', y1);
+      el.setAttribute('x2', x2);
+      el.setAttribute('y2', y2);
+      applySvgAttrs(el, attrs);
+      return el;
+    }
+
+    function rectEl(x, y, width, height, attrs = {}) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      el.setAttribute('x', x);
+      el.setAttribute('y', y);
+      el.setAttribute('width', width);
+      el.setAttribute('height', height);
+      applySvgAttrs(el, attrs);
+      return el;
+    }
+
+    function circleEl(cx, cy, r, attrs = {}) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      el.setAttribute('cx', cx);
+      el.setAttribute('cy', cy);
+      el.setAttribute('r', r);
+      applySvgAttrs(el, attrs);
+      return el;
+    }
+
+    function textEl(x, y, text, attrs = {}) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      el.setAttribute('x', x);
+      el.setAttribute('y', y);
+      el.textContent = text;
+      applySvgAttrs(el, attrs);
+      if (attrs.class === 'axis' || attrs.class === 'svg-note') {
+        el.classList.add(attrs.class);
+      }
+      return el;
+    }
+
+    function applySvgAttrs(el, attrs) {
+      Object.entries(attrs || {}).forEach(([key, value]) => {
+        if (value == null) return;
+        if (key === 'class') {
+          if (String(value).includes(' ')) {
+            String(value).split(/\s+/).forEach((c) => c && el.classList.add(c));
+          } else {
+            el.classList.add(String(value));
+          }
+          return;
+        }
+        el.setAttribute(key, String(value));
+      });
+    }
+
+    function attachPointEvents(node, filterId, tooltipFactory) {
+      node.addEventListener('click', () => selectFilter(filterId));
+      node.addEventListener('mousemove', (evt) => showTooltip(evt, tooltipFactory()));
+      node.addEventListener('mouseleave', hideTooltip);
+    }
+
+    function selectFilter(filterId) {
+      if (!filterId || !state.derived.byFilter[filterId]) return;
+      state.selectedFilterId = filterId;
+      renderDistributionChart();
+      renderConsensusSectionContent();
+      renderBraidChart();
+      renderScatterChart();
+      renderCasePanelContent();
+      renderFeedbackPanelContent();
+      scrollSelectedRowIntoView();
+    }
+
+    function scrollSelectedRowIntoView() {
+      const row = document.querySelector('.row-btn.is-selected');
+      if (row) row.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
+
+    function chooseDefaultSelection() {
+      const contestedTop = state.derived.contested[0];
+      const strongConsensus = state.derived.rankedRaw.find((f) => f.scoreMean > 0.8 && f.scoreRange < 0.12);
+      state.selectedFilterId = (contestedTop || strongConsensus || state.derived.rankedRaw[0])['filter-id'];
+    }
+
+    function handleResize() {
+      renderDistributionChart();
+      renderConsensusSectionContent();
+      renderBraidChart();
+      renderScatterChart();
+    }
+
+    async function init() {
+      try {
+        const { raw, prompts } = await loadData();
+        state.raw = raw;
+        state.prompts = prompts;
+        state.derived = buildDerived(raw);
+        chooseDefaultSelection();
+        render();
+        window.addEventListener('resize', debounce(handleResize, 120));
+        window.addEventListener('scroll', hideTooltip, { passive: true });
+      } catch (err) {
+        console.error(err);
+        const root = document.getElementById('app-root');
+        root.innerHTML = '';
+        root.append(makeEl('div', { class: 'error' }, [
+          makeEl('strong', { text: 'Could not load the evaluation data. ' }),
+          'This page expects ', makeEl('code', { text: 'evaluation.json' }), ' in the same directory and usually works best when served via a local HTTP server (not ', makeEl('code', { text: 'file://' }), ').',
+          makeEl('div', { class: 'mono', style: 'margin-top:8px;' , text: String(err && err.message ? err.message : err) }),
+        ]));
+      }
+    }
+
+    function debounce(fn, wait) {
+      let t = null;
+      return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), wait);
+      };
+    }
+
+    init();
+  </script>
+</body>
+</html>

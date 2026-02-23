@@ -92,3 +92,61 @@ Same as above but output is `gemini-evaluation.md`.
 ### Document process
 
 In the same output file, also document the process you followed to identify the criteria, evaluate the images, and come to the conclusions. This will help in making the process transparent and reproducible.
+
+### Consolidation
+
+Convert \*-evaluation.md into a single structured `evaluation.json` that captures, for each of the three evaluations, the following `evaluations` array of objects with the following fields:
+
+- evaluator: e.g. "gpt", "gemini", "claude" -- from the filename of the evaluation file
+- filter-id: e.g. charcoal-on-kraft -- same as the file basename in `filters/`
+- name: e.g. "Charcoal on Kraft"
+- score: e.g. 0.85 - a number between 0 and 1 that represents the overall quality of the filter based on the evaluation criteria
+- feedback: the text feedback for that filter, in Markdown
+- criteria: an object with details of the evaluation criteria, e.g. for GPT, {Concept: 0.9, Impact: 0.8, ...} while for claude it could be {"Aesthetic Authenticity": ..., ...} with each criterion having a score between 0 and 1.
+
+This apart, include a `weights` object for each evaluator to calculate the score from the criteria, and any other relevant metadata.
+
+### Synthesize evaluation story (Codex - GPT 5.3 Codex xhigh + Claude Code - Sonnet 4.6)
+
+Using evaluation.json and any other content, write as a **Narrative-driven Data Story** that synthesizes the evaluations into a compelling narrative.
+
+Write like Malcolm Gladwell. Visualize like the NYT graphics team. Think like a detective who must defend findings under scrutiny.
+
+- **Compelling hook**: Start with a human angle, tension, or mystery that draws readers in
+- **Story arc**: Build the narrative through discovery, revealing insights progressively
+- **Integrated visualizations**: Beautiful, **interactive** charts that are revelatory and advance the story (not decorative)
+- **Concrete examples**: Make abstract patterns tangible through specific cases
+- **Evidence woven in**: Data points, statistics, and supporting details flow naturally within the prose
+- **"Wait, really?" moments**: Position surprising findings for maximum impact
+- **So what?**: Clear implications and actions embedded in the narrative
+- **Honest caveats**: Acknowledge limitations without undermining the story
+
+The objective is to help the reader understand how we prompted each model (see prompts.md), how each model evaluated the images (see \*-evaluation.md), and what the results were (see evaluation.json). The narrative should weave these elements together to tell a cohesive story about the evaluation process and its findings.
+
+Beauty and aesthetics are key.
+
+Create this as a single evaluation-codex.html that loads evaluation.json and renders the narrative.
+
+### Enrich evaluation story (Claude Code - Sonnet 4.6)
+
+Extensively link to sources - e.g. filters, images, evaluation .md files, etc.
+When linking to images, they should appear on a modal popup with captions.
+All image thumbnails should also be clickable to view the full image in a modal popup with captions.
+In Act II, ensure that the cards for GPT, Claude Sonnet and Gemini are in a single row, side-by-side.
+When hovering over the circles in Claud vs GPT Scores - Colored by Gemini, show the output images and rating details on click - in a modal popup.
+In the "Terminal Matrix - maximum controversy" card, include two images for Terminal Matrix, just like you've done for Thermal Scan and CMYK Separation.
+In The Full Picture sections, clicking on any row should open the filter in a modal popup showing the output images and the evaluation details.
+Re-use popup code for consistency and efficiency - i.e. have a single popup "component" for images and one for filters, and re-use it throughout the narrative.
+Make the Complete Scores appendix sortable by any column.
+
+---
+
+Allow the cards in Act II to take up more width (.wide)
+
+---
+
+When linking to .md, .sh, or .json files, clicking on them should show them in a popup with a caption and syntax highlighting.
+
+## TODO: Discover
+
+## TODO: Parametrize

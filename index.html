@@ -152,12 +152,20 @@
 
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
-    <div class="container-fluid">
+    <div class="container-fluid position-relative">
       <a class="navbar-brand" href=".">LLM Filter Gallery</a>
+      <div class="d-none d-lg-flex position-absolute top-50 start-50 translate-middle gap-2">
+        <a class="btn btn-sm btn-outline-light" href="evaluation-claude.html">Claude Data Story</a>
+        <a class="btn btn-sm btn-outline-light" href="evaluation-codex.html">Codex Data Story</a>
+      </div>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="d-lg-none d-flex flex-column gap-2 my-3">
+          <a class="btn btn-outline-light" href="evaluation-claude.html">Claude Data Story</a>
+          <a class="btn btn-outline-light" href="evaluation-codex.html">Codex Data Story</a>
+        </div>
         <div class="nav-item dropdown ms-auto" role="group" aria-label="Toggle dark mode" title="Toggle Dark Mode">
           <button class="dark-theme-toggle btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme (dark)">
             <i class="bi bi-circle-half"></i> <span class="d-lg-none ms-2">Toggle theme</span>

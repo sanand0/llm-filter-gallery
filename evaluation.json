@@ -1,0 +1,2622 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-02-23T20:18:06.179775Z",
+  "sourceFiles": [
+    "gpt-evaluation.md",
+    "gemini-evaluation.md",
+    "sonnet-evaluation.md"
+  ],
+  "filterMetadataSource": "filters/*.md",
+  "filters": [
+    {
+      "filter-id": "arctic-crystal",
+      "name": "Arctic Crystal"
+    },
+    {
+      "filter-id": "brutalist-duotone",
+      "name": "Brutalist Duotone"
+    },
+    {
+      "filter-id": "byzantine-mosaic",
+      "name": "Byzantine Mosaic"
+    },
+    {
+      "filter-id": "cathedral-glass",
+      "name": "Cathedral Glass"
+    },
+    {
+      "filter-id": "charcoal-on-kraft",
+      "name": "Charcoal on Kraft"
+    },
+    {
+      "filter-id": "cmyk-separation",
+      "name": "CMYK Separation"
+    },
+    {
+      "filter-id": "copper-plate-etching",
+      "name": "Copper Plate Etching"
+    },
+    {
+      "filter-id": "cross-stitch-canvas",
+      "name": "Cross-Stitch Canvas"
+    },
+    {
+      "filter-id": "gilded-woodblock",
+      "name": "Gilded Woodblock"
+    },
+    {
+      "filter-id": "graphite-study",
+      "name": "Graphite Study"
+    },
+    {
+      "filter-id": "holographic-foil",
+      "name": "Holographic Foil"
+    },
+    {
+      "filter-id": "impasto-storm",
+      "name": "Impasto Storm"
+    },
+    {
+      "filter-id": "infrared-reverie",
+      "name": "Infrared Reverie"
+    },
+    {
+      "filter-id": "iron-rust",
+      "name": "Iron & Rust"
+    },
+    {
+      "filter-id": "linocut-bold",
+      "name": "Linocut Bold"
+    },
+    {
+      "filter-id": "neon-blueprint",
+      "name": "Neon Blueprint"
+    },
+    {
+      "filter-id": "noir-rain",
+      "name": "Noir Rain"
+    },
+    {
+      "filter-id": "origami-fold",
+      "name": "Origami Fold"
+    },
+    {
+      "filter-id": "pointillist-garden",
+      "name": "Pointillist Garden"
+    },
+    {
+      "filter-id": "pop-art-screen",
+      "name": "Pop Art Screen"
+    },
+    {
+      "filter-id": "prussian-cyanotype",
+      "name": "Prussian Cyanotype"
+    },
+    {
+      "filter-id": "risograph-reverie",
+      "name": "Risograph Reverie"
+    },
+    {
+      "filter-id": "signal-corrupted",
+      "name": "Signal Corrupted"
+    },
+    {
+      "filter-id": "silver-daguerreotype",
+      "name": "Silver Daguerreotype"
+    },
+    {
+      "filter-id": "solarized-dream",
+      "name": "Solarized Dream"
+    },
+    {
+      "filter-id": "synthwave-horizon",
+      "name": "Synthwave Horizon"
+    },
+    {
+      "filter-id": "terminal-matrix",
+      "name": "Terminal Matrix"
+    },
+    {
+      "filter-id": "thermal-scan",
+      "name": "Thermal Scan"
+    },
+    {
+      "filter-id": "verdigris-antiquity",
+      "name": "Verdigris Antiquity"
+    },
+    {
+      "filter-id": "watercolor-bloom",
+      "name": "Watercolor Bloom"
+    }
+  ],
+  "evaluators": {
+    "gpt": {
+      "id": "gpt",
+      "displayName": "GPT",
+      "sourceFile": "gpt-evaluation.md",
+      "weights": {
+        "Concept": 0.15,
+        "Impact": 0.2,
+        "Color/Tone": 0.15,
+        "Structure": 0.15,
+        "Texture": 0.1,
+        "Robustness": 0.15,
+        "Artifacts": 0.1
+      },
+      "criteria": {
+        "Concept": "Concept coherence",
+        "Impact": "Visual impact",
+        "Color/Tone": "Color & tonal mastery",
+        "Structure": "Structure legibility",
+        "Texture": "Texture/material quality",
+        "Robustness": "Cross-input robustness",
+        "Artifacts": "Artifact control"
+      },
+      "scales": {
+        "criteria": {
+          "rawMin": 0,
+          "rawMax": 10,
+          "normalizedMin": 0,
+          "normalizedMax": 1
+        },
+        "score": {
+          "rawMin": 0,
+          "rawMax": 100,
+          "normalizedMin": 0,
+          "normalizedMax": 1
+        }
+      },
+      "scoreFormula": "weighted_sum(criteria_raw_0_to_10, weights) / 10",
+      "notes": [
+        "Per-filter criterion scores and overall are provided explicitly in the scoring table.",
+        "Overall score is a weighted score on a 0-100 scale in the report, normalized here to 0-1."
+      ]
+    },
+    "gemini": {
+      "id": "gemini",
+      "displayName": "Gemini",
+      "sourceFile": "gemini-evaluation.md",
+      "weights": {
+        "Overall": 1.0
+      },
+      "criteria": {
+        "Overall": "Single overall score provided in report (no per-criterion numeric breakdown)"
+      },
+      "criteriaDefinitions": {
+        "Concept Integrity": "Does the visual output match the promised aesthetic (e.g., does \"Cyanotype\" look like a cyanotype)?",
+        "Palette Consistency": "Adherence to the color constraints of the medium (e.g., monochrome, duotone, limited palette).",
+        "Texture & Complexity": "The presence of organic artifacts (grain, bleed, noise) that sell the illusion of a physical medium.",
+        "Data Fidelity": "For chart inputs, does the filter preserve the information while applying the aesthetic?"
+      },
+      "scales": {
+        "criteria": {
+          "rawMin": 0,
+          "rawMax": 10,
+          "normalizedMin": 0,
+          "normalizedMax": 1
+        },
+        "score": {
+          "rawMin": 0,
+          "rawMax": 10,
+          "normalizedMin": 0,
+          "normalizedMax": 1
+        }
+      },
+      "scoreFormula": "Overall (single reported score) / 10",
+      "notes": [
+        "The Gemini report defines multiple evaluation criteria conceptually, but only publishes one numeric score per filter.",
+        "The `criteria` object therefore contains a single `Overall` criterion so scores remain machine-computable."
+      ]
+    },
+    "claude": {
+      "id": "claude",
+      "displayName": "Claude Sonnet",
+      "model": "Claude Sonnet (claude-sonnet-4-5)",
+      "sourceFile": "sonnet-evaluation.md",
+      "weights": {
+        "Aesthetic Authenticity": 0.25,
+        "Conceptual Coherence": 0.2,
+        "Cross-Input Versatility": 0.2,
+        "Technical Execution": 0.2,
+        "Artistic Impact": 0.15
+      },
+      "criteriaAbbreviations": {
+        "AA": "Aesthetic Authenticity",
+        "CC": "Conceptual Coherence",
+        "CV": "Cross-Input Versatility",
+        "TE": "Technical Execution",
+        "AI": "Artistic Impact"
+      },
+      "scales": {
+        "criteria": {
+          "rawMin": 0,
+          "rawMax": 10,
+          "normalizedMin": 0,
+          "normalizedMax": 1
+        },
+        "score": {
+          "rawMin": 0,
+          "rawMax": 10,
+          "normalizedMin": 0,
+          "normalizedMax": 1
+        }
+      },
+      "scoreFormula": "AA*0.25 + CC*0.20 + CV*0.20 + TE*0.20 + AI*0.15, then /10 for normalization",
+      "notes": [
+        "The report includes a note that `verdigris-antiquity` was rescored and repositioned; table values are used as canonical source."
+      ]
+    }
+  },
+  "evaluations": [
+    {
+      "evaluator": "gpt",
+      "filter-id": "terminal-matrix",
+      "name": "Terminal Matrix",
+      "score": 0.7885,
+      "feedback": "**What's good**\n\n- Very consistent concept: every variant convincingly reads as monochrome phosphor-green ASCII/character-cell rendering on black CRT.\n- High visual presence: strong silhouette and glow-like green highlights give a moody, retro-computing aesthetic.\n- Color and tonal control are well handled: limited palette maintains contrast between bright glyphs and deep black background.\n- Texture effect is believable: grid cells, cross-hatching and vertical scanlines convincingly emulate character-cell and CRT artifacts.\n\n**What's not good**\n\n- Legibility drops in dense-detail inputs (comic variant): fine line art and small text collapse into noisy patches, reducing narrative clarity.\n- Chart variant over-simplifies numeric/text information - axis labels and small annotations become hard to read at this cell size.\n- Some aliasing and periodic banding of vertical scanlines produce distracting patterns in shadow areas, slightly reducing perceived fidelity.\n- Cross-input robustness uneven: photo portrait maintains subject recognition, but graphic/comic details sometimes lose hierarchies between figure and ground.\n\n**Judge rationale:** Terminal-matrix is an effective, narrowly focused aesthetic that sells the phosphor CRT metaphor across all three inputs. It excels in atmosphere and tonal restraint, but the cell/grid resolution chosen trades away small-detail legibility in structured graphics and comics. With adaptive cell-sizing or selective anti-aliasing for fine text, this filter would move from strong to excellent in cross-input utility.",
+      "criteria": {
+        "Concept": 0.9,
+        "Impact": 0.8,
+        "Color/Tone": 0.85,
+        "Structure": 0.7,
+        "Texture": 0.75,
+        "Robustness": 0.7,
+        "Artifacts": 0.7
+      },
+      "score-raw": 78.85,
+      "criteria-raw": {
+        "Concept": 9.0,
+        "Impact": 8.0,
+        "Color/Tone": 8.5,
+        "Structure": 7.0,
+        "Texture": 7.5,
+        "Robustness": 7.0,
+        "Artifacts": 7.0
+      },
+      "rank": 1,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "thermal-scan",
+      "name": "Thermal Scan",
+      "score": 0.7825,
+      "feedback": "**What's good**\n\n- Consistent false-color palette (deep purples -> hot yellows) that convincingly reads as thermal across all three variants.\n- High visual drama on photographic and comic inputs: warm highlights create strong figure-ground separation and focal emphasis (especially faces and hero figures).\n- The filter preserves expressive non-photoreal line work in the comic variant while adding believable emissive highlights that boost mood.\n- Subtle scanning lines and vignetting enhance the sensor-readout aesthetic and give a coherent material texture.\n\n**What's not good**\n\n- Chart variant loses some data legibility: original bar color distinctions and small legend text are muted and reduced contrast makes numeric labels harder to read.\n- Artifacts: banding and haloing around high-contrast edges (notably hair and comic black inks) occasionally look clipped rather than smoothly thermal.\n- Color mapping sometimes overrides semantic color in the comic panel (e.g., yellow areas become mid-tone orange/purple shifts) which can obscure intended iconography.\n- Cross-input balance: while strong on portrait and stylized comic art, the filter is less suitable for information graphics where precise color/value differences must remain unambiguous.\n\n**Judge rationale:** Thermal-scan succeeds as a persuasive false-color treatment, providing cinematic emphasis and a clear central focal read on pictorial inputs. Its expressive texture and vignetting sell the sensor readout concept, but the aggressive remapping reduces functional legibility for charts and introduces occasional banding around high-contrast edges. For exhibition use, it is excellent as an atmospheric visual effect but should be tuned or optionally softened when applied to data-critical graphics.",
+      "criteria": {
+        "Concept": 0.9,
+        "Impact": 0.85,
+        "Color/Tone": 0.8,
+        "Structure": 0.7,
+        "Texture": 0.75,
+        "Robustness": 0.7,
+        "Artifacts": 0.65
+      },
+      "score-raw": 78.25,
+      "criteria-raw": {
+        "Concept": 9.0,
+        "Impact": 8.5,
+        "Color/Tone": 8.0,
+        "Structure": 7.0,
+        "Texture": 7.5,
+        "Robustness": 7.0,
+        "Artifacts": 6.5
+      },
+      "rank": 2,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "neon-blueprint",
+      "name": "Neon Blueprint",
+      "score": 0.7805,
+      "feedback": "**What's good**\n\n- Clear and consistent concept: the cyan-on-deep-navy palette and glowing contour lines successfully evoke a technical schematic and circuit-board aesthetic across all three variants.\n- High visual presence: the neon outlines create strong figure-ground separation and memorable silhouettes, especially in the photo and comic variants.\n- Expressive line work: the filter produces convincing engraved/plotter-like hatch marks and contour strokes that give the outputs a crafted, non-photoreal technical feel.\n- Good tonal hierarchy in the chart: the bar shapes, gridlines and labels remain distinguishable and preserve the data-oriented look expected from a schematic plot.\n\n**What's not good**\n\n- Over-etching on faces: the photo variant's face detailing becomes visually noisy in midtones, reducing natural facial modeling and creating slightly uncanny banding.\n- Comic panel inconsistencies: while line clarity is strong, the uniform glow sometimes flattens panel depth and obscures small internal lettering or texture in dense areas.\n- Residual artifacts: halos and localized glow bleed (notably around thin type and fine hatch) reduce crispness and can impair readability at small sizes.\n- Occasional structure loss: very dark regions collapse into near-black with only faint cyan speckling, which undermines legibility of fine background elements in some inputs.\n\n**Judge rationale:** neon-blueprint is a well-realized stylistic filter that convincingly translates imagery into a circuit-board schematic language with a compelling neon aesthetic. It handles graphic and chart content reliably, but photographic subjects suffer from over-etching and glow bleed that erode subtle form. With tighter artifact control and reduced midtone stroking this filter would move from strong to excellent in cross-input consistency.",
+      "criteria": {
+        "Concept": 0.85,
+        "Impact": 0.8,
+        "Color/Tone": 0.8,
+        "Structure": 0.7,
+        "Texture": 0.7,
+        "Robustness": 0.75,
+        "Artifacts": 0.65
+      },
+      "score-raw": 78.05,
+      "criteria-raw": {
+        "Concept": 8.5,
+        "Impact": 8.0,
+        "Color/Tone": 8.0,
+        "Structure": 7.0,
+        "Texture": 7.0,
+        "Robustness": 7.5,
+        "Artifacts": 6.5
+      },
+      "rank": 3,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "risograph-reverie",
+      "name": "Risograph Reverie",
+      "score": 0.7765,
+      "feedback": "**What's good**\n\n- Consistent two-colour risograph look across all three outputs - coral and teal are well chosen and evoke authentic misregistration.\n- Halftone dot patterning convincingly simulates letterpress/risograph texture with pleasing tactile quality and believable paper cream base.\n- High visual character: the misregistration adds a lively, analog feel and strong emotional/artistic presence, especially in the photo and comic variants.\n- Good tonal separation in pictorial inputs: the photo retains face modeling and the comic retains panel borders and illustrative contrast.\n\n**What's not good**\n\n- Chart variant suffers legibility loss - axis labels and smaller numeric text are poorly preserved by the heavy dot pattern and channel offset.\n- Misregistration, while expressive, creates ghosting on small-scale details (thin text, fine lines) causing reading difficulty.\n- Cross-input consistency drops for information-dense graphics: the same parameters that flatter photographs hamper data fidelity.\n- Some haloing and localized clustering of dots near high-contrast edges produces distracting micro-artifacts in areas that require crispness.\n\n**Judge rationale:** This filter delivers a convincing risograph aesthetic with delightful tactile halftone and color interplay; its strengths are greatest on portrait and illustrative inputs where texture and misregistration contribute character. However, the design decisions reduce functional legibility for data-rich images - small type and precise chart geometry lose fidelity. For exhibition display, pair this filter with pieces where expressive surface and mood are priorities, and avoid using it for documents that require exact readability.",
+      "criteria": {
+        "Concept": 0.9,
+        "Impact": 0.85,
+        "Color/Tone": 0.8,
+        "Structure": 0.65,
+        "Texture": 0.85,
+        "Robustness": 0.6,
+        "Artifacts": 0.65
+      },
+      "score-raw": 77.65,
+      "criteria-raw": {
+        "Concept": 9.0,
+        "Impact": 8.5,
+        "Color/Tone": 8.0,
+        "Structure": 6.5,
+        "Texture": 8.5,
+        "Robustness": 6.0,
+        "Artifacts": 6.5
+      },
+      "rank": 4,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "verdigris-antiquity",
+      "name": "Verdigris Antiquity",
+      "score": 0.766,
+      "feedback": "**What's good**\n\n- Clear and consistent verdigris copper concept across all three variants - the teal-green patina and warm brown base read immediately as oxidized metal.\n- High aesthetic punch in photo and comic: dramatic highlights on faces and linework create attractive figure-ground separation and mood.\n- Texture rendering is multi-scale and believable: fine grain, larger corrosion blotches, and metallic sheen are present and varied.\n- Comic variant preserves ink lines and panel structure well, integrating patina without losing stylistic intent.\n\n**What's not good**\n\n- Chart variant loses some numeric legibility - subtle paper texture and low contrast make small labels and thin gridlines hard to read.\n- Photo variant sometimes maps the patina too aggressively onto skin highlights, flattening subtle facial modeling in places.\n- Artifact control shows occasional banding and posterization in midtones, especially in uniform areas like background walls and chart fills.\n- Cross-input consistency uneven: filter excels on highly textured or inked images but compromises informational clarity on data graphics.\n\n**Judge rationale:** Verdigris-antiquity convincingly sells an oxidized-copper aesthetic with rich multi-scale corrosion and metallic highlights; it is especially effective on portraits and illustrated linework where the patina adds mood without destroying structure. However, its tonal compression and textured overlays can impede legibility in data-driven assets - a lighter, lower-frequency treatment or adaptive contrast for thin strokes and small type would improve cross-input robustness.",
+      "criteria": {
+        "Concept": 0.82,
+        "Impact": 0.85,
+        "Color/Tone": 0.8,
+        "Structure": 0.71,
+        "Texture": 0.86,
+        "Robustness": 0.68,
+        "Artifacts": 0.64
+      },
+      "score-raw": 76.6,
+      "criteria-raw": {
+        "Concept": 8.2,
+        "Impact": 8.5,
+        "Color/Tone": 8.0,
+        "Structure": 7.1,
+        "Texture": 8.6,
+        "Robustness": 6.8,
+        "Artifacts": 6.4
+      },
+      "rank": 5,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "linocut-bold",
+      "name": "Linocut Bold",
+      "score": 0.7625,
+      "feedback": "**What's good**\n\n- Very clear black-on-off-white linocut aesthetic across all variants - strong figure/ground separation and high-contrast silhouettes.\n- Photo variant preserves portraital form and facial features with expressive, clean cut edges suited to relief printing.\n- Comic variant translates panels and line art into bold, authentic woodcut/linocut motifs; lettering and halftone feel consistent with the concept.\n- Paper grain and slight mottling add believable tactile materiality, reinforcing the relief-print illusion.\n\n**What's not good**\n\n- Chart variant loses some numeric and label legibility: small type and legend are clipped or roughened by the heavy binarization.\n- Over-thick blocking in shadowed areas (especially in the portrait) removes midtone detail that would aid subtle modeling.\n- Artifacts around fine shapes (thin text, small icons, and some comic details) show occasional haloing and jagged clipping.\n- Cross-input consistency dips when rendering tiny typographic elements and chart bars - the filter favors bold shapes at the expense of fine information.\n\n**Judge rationale:** Linocut-bold convincingly delivers a stark relief-print mood and tactile paper texture; it reads immediately as an intentional black-ink linocut. The filter excels on high-contrast photographic and comic inputs, but it is less forgiving for information-dense graphics: small text, legends, and fine chart details are frequently destroyed by aggressive binarization. For exhibition use, this is a strong stylistic tool best applied where pictorial boldness is the goal rather than precise data legibility.",
+      "criteria": {
+        "Concept": 0.85,
+        "Impact": 0.8,
+        "Color/Tone": 0.8,
+        "Structure": 0.7,
+        "Texture": 0.85,
+        "Robustness": 0.65,
+        "Artifacts": 0.6
+      },
+      "score-raw": 76.25,
+      "criteria-raw": {
+        "Concept": 8.5,
+        "Impact": 8.0,
+        "Color/Tone": 8.0,
+        "Structure": 7.0,
+        "Texture": 8.5,
+        "Robustness": 6.5,
+        "Artifacts": 6.0
+      },
+      "rank": 6,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "graphite-study",
+      "name": "Graphite Study",
+      "score": 0.7602,
+      "feedback": "**What's good**\n\n- Consistent pencil-on-cream paper palette across all three variants; warm paper tone and desaturated graphite lines communicate the intended aesthetic strongly.\n- Variable crosshatching is expressive and well-tuned in organic regions (portrait hair, detective coat) giving convincing volumetric shading.\n- Texture simulation is high quality: believable paper grain and pencil mark variety (fine strokes, dense hatching) increase tactile presence.\n- Comic panel linework remains crisp and decorative borders are preserved, supporting the stylized intent for that variant.\n\n**What's not good**\n\n- Chart variant loses some data legibility due to heavy hatch patterns overlaying numeric labels and thin gridlines, making precise reading harder.\n- Photo variant shows occasional over-crosshatching in midtones (face and background) which flattens some facial detail and reduces subtle contrast.\n- Comic variant presents tiled or pixel-like artifacts in flat-tone regions (background blocks) that distract from hand-drawn illusion.\n- Artifact control inconsistent: moire-like repeating patterns appear in low-detail areas, and halation around thin type reduces crispness.\n\n**Judge rationale:** Graphite-study succeeds as a convincingly tactile pencil-sketch filter: paper tone, stroke variety, and crosshatch directionality read as an intentional studio process. It is most successful on subjects with clear organic form (portrait, illustrated comics) but shows limitations on dense information graphics where hatch density competes with text and axes. With refined hatch scaling and improved artifact suppression in flat or small-type regions, this filter would be exhibition-ready across all three use cases.",
+      "criteria": {
+        "Concept": 0.85,
+        "Impact": 0.72,
+        "Color/Tone": 0.8,
+        "Structure": 0.7,
+        "Texture": 0.86,
+        "Robustness": 0.68,
+        "Artifacts": 0.65
+      },
+      "score-raw": 76.02,
+      "criteria-raw": {
+        "Concept": 8.5,
+        "Impact": 7.2,
+        "Color/Tone": 8.0,
+        "Structure": 7.0,
+        "Texture": 8.6,
+        "Robustness": 6.8,
+        "Artifacts": 6.5
+      },
+      "rank": 7,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "prussian-cyanotype",
+      "name": "Prussian Cyanotype",
+      "score": 0.7525,
+      "feedback": "**What's good**\n\n- Consistent Prussian-blue monochrome across photo, comic and chart that convincingly reads as an iron-salt cyanotype print.\n- Photo variant: rich mid-to-deep blues preserve facial modelling and create a pleasing photographic portrait mood.\n- Comic variant: linework remains clear and the duotone enhances noir and whimsical panels in an artistically appropriate way.\n- Chart variant: maintains a restrained, professional look - background wash and tonal gradation give a paper-like feel without overwhelming the data.\n\n**What's not good**\n\n- Highlights and blown whites in the photo lose subtle detail (especially on the cheek and sweater) producing a slightly posterized look.\n- Comic panels show uneven contrast - some thin ink lines become faint against midtones, reducing fine-line legibility in busy areas.\n- Chart labels and some percentage text suffer mild banding and contrast loss against the paper wash, reducing immediate readibility.\n- Occasional haloing and posterization around high-contrast edges across variants indicate limited artifact control on high-frequency detail.\n\n**Judge rationale:** prussian-cyanotype accomplishes its intention admirably: the single prussian-blue palette unifies diverse source imagery and evokes a convincing cyanotype-on-watercolour texture. It is strongest as a photographic and narrative treatment but requires finer tonal mapping and anti-aliasing to preserve thin ink lines and small type at scale. With refined highlight rolloff and improved edge artifact suppression this filter would be exhibition-ready across all three domains.",
+      "criteria": {
+        "Concept": 0.8,
+        "Impact": 0.85,
+        "Color/Tone": 0.8,
+        "Structure": 0.7,
+        "Texture": 0.75,
+        "Robustness": 0.6,
+        "Artifacts": 0.65
+      },
+      "score-raw": 75.25,
+      "criteria-raw": {
+        "Concept": 8.0,
+        "Impact": 8.5,
+        "Color/Tone": 8.0,
+        "Structure": 7.0,
+        "Texture": 7.5,
+        "Robustness": 6.0,
+        "Artifacts": 6.5
+      },
+      "rank": 8,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "copper-plate-etching",
+      "name": "Copper Plate Etching",
+      "score": 0.7518,
+      "feedback": "**What's good**\n\n- Consistent warm cream ground and dark-brown line tone convincingly evoke intaglio/copper-plate paper across all three variants.\n- Crosshatch density modulation reads naturally on curved surfaces (portrait hair, comic figure shading, chart bars) producing a persuasive engraving look.\n- Fine dot-and-line textures have high material believability - micro-roughness and plate grain feel authentic.\n- Visual drama is strong in the photo and comic variants where line direction and density create good form modeling and depth.\n\n**What's not good**\n\n- Legibility of precise structure suffers in the chart variant: axis text and small numbers are weakened or lost by the heavy crosshatch overlay.\n- Cross-input consistency is uneven: comic and photo retain strong line-art detail, but the chart loses contrast and becomes hard to read.\n- Some moire-style interference patterns appear in flat tonal areas (backgrounds, uniform highlights) creating distracting wave artifacts.\n- Edge crispness around small text and thin strokes is sometimes ragged, reducing typographic fidelity for data/infographic use.\n\n**Judge rationale:** This filter very effectively translates a copper-plate engraving aesthetic to photographic and illustrated inputs - tone, warmth and hatching feel intentional and crafted. However, its aggressive crosshatch algorithm can collapse small-scale information (charts, fine typography) and produce periodic interference in flat fields. For exhibition use the filter excels on portraits and line art but should be tuned or paired with a legibility pass when applied to data graphics.",
+      "criteria": {
+        "Concept": 0.85,
+        "Impact": 0.75,
+        "Color/Tone": 0.8,
+        "Structure": 0.62,
+        "Texture": 0.88,
+        "Robustness": 0.6,
+        "Artifacts": 0.65
+      },
+      "score-raw": 75.18,
+      "criteria-raw": {
+        "Concept": 8.5,
+        "Impact": 7.5,
+        "Color/Tone": 8.0,
+        "Structure": 6.2,
+        "Texture": 8.8,
+        "Robustness": 6.0,
+        "Artifacts": 6.5
+      },
+      "rank": 9,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "cross-stitch-canvas",
+      "name": "Cross-Stitch Canvas",
+      "score": 0.7495,
+      "feedback": "**What's good**\n\n- Clear and consistent X-stitch motif applied across all three variants, reinforcing the hand-embroidery concept.\n- Linen background tone is convincing and supports a craft-like aesthetic without calling attention away from stitched forms.\n- Stitch density and scale are well chosen to suggest woven thread; small color accents translate well into cross-stitch marks.\n- Chart variant preserves intended elements (bars, legend) while adopting the painterly stitched look, suitable for decorative data presentation.\n\n**What's not good**\n\n- Human features in the photo variant lose fine facial detail - important identity cues collapse into coarse Xs, reducing portrait legibility.\n- Comic variant shows some local color bleeding where adjacent stitch colors compete, reducing crispness of drawn lines and halving the intended line weight hierarchy.\n- Chart axis labels and small text become marginal and faint through the stitch overlay; microtypography is not reliably legible.\n- Occasional moire-like interference and haloing appear at high-contrast edges (black X over light areas), creating visual jitter.\n\n**Judge rationale:** This filter delivers a convincing cross-stitch textile look that reads immediately as embroidered linen and works well as a decorative treatment for diverse image types. It excels at preserving large color blocks and conveying material tactility, but it is less forgiving with fine detail and small text - where the X-grid overwhelms information. For exhibition use, pair with images that rely on shape and color rather than micro-detail, or consider adaptive grid scaling to protect typographic legibility.",
+      "criteria": {
+        "Concept": 0.85,
+        "Impact": 0.72,
+        "Color/Tone": 0.7,
+        "Structure": 0.68,
+        "Texture": 0.8,
+        "Robustness": 0.7,
+        "Artifacts": 0.65
+      },
+      "score-raw": 74.95,
+      "criteria-raw": {
+        "Concept": 8.5,
+        "Impact": 7.2,
+        "Color/Tone": 7.0,
+        "Structure": 6.8,
+        "Texture": 8.0,
+        "Robustness": 7.0,
+        "Artifacts": 6.5
+      },
+      "rank": 10,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "silver-daguerreotype",
+      "name": "Silver Daguerreotype",
+      "score": 0.7425,
+      "feedback": "**What's good**\n\n- Portrait (photo) variant: convincing S-curve toning and metallic sheen that enhance subject modelling and create an authentic antique feel.\n- Oval vignette applied consistently creates a focused figure-ground separation that reads well on the photo and comics.\n- Metallic grain texture provides tactile richness on detailed areas (hair, coat folds) without overwhelming midtones in the portrait.\n\n**What's not good**\n\n- Comic variant: vignette and heavy desaturation obscure panel borders and flatten linework contrast in places, reducing narrative clarity.\n- Chart variant: intense central bleaching and vignette collapse important labels and bars at the image center, harming data legibility.\n- Artifact control inconsistent - visible hard clipping and haloing where vignette meets imagery, and uneven noise across tonal ranges.\n\n**Judge rationale:** The filter delivers a very persuasive silver-plate portrait effect: tonal S-curve, cool metallic highlights, and a tasteful oval vignette create strong period character. However, the same processing choices that flatter photographic subjects-central burn and pronounced vignette-compromise readability for high-contrast line art and informational graphics. For broad applicability, the vignette falloff and center exposure should be made adaptive to preserve structure in comics and charts.",
+      "criteria": {
+        "Concept": 0.85,
+        "Impact": 0.8,
+        "Color/Tone": 0.8,
+        "Structure": 0.65,
+        "Texture": 0.75,
+        "Robustness": 0.6,
+        "Artifacts": 0.6
+      },
+      "score-raw": 74.25,
+      "criteria-raw": {
+        "Concept": 8.5,
+        "Impact": 8.0,
+        "Color/Tone": 8.0,
+        "Structure": 6.5,
+        "Texture": 7.5,
+        "Robustness": 6.0,
+        "Artifacts": 6.0
+      },
+      "rank": 11,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "infrared-reverie",
+      "name": "Infrared Reverie",
+      "score": 0.7375,
+      "feedback": "**What's good**\n\n- Portrait (photo variant) - compelling infrared look: bright, glowing highlights on skin and convincing darkened mid/blues that push the subject forward, creating a strong figure-ground separation.\n- Comic variant - moody, cinematic conversion that preserves linework and adds halation in highlights, which enhances noir panels and gives playful contrast to the lighter manga-like panel.\n- Consistent highlight bloom aesthetic across inputs - visible soft halation and slightly desaturated, warm-ivory paper tone ties the three outputs into a recognizable family.\n\n**What's not good**\n\n- Chart variant - aggressive highlight lift and bloom reduce contrast and reduce text/label legibility; small labels and pale ticks almost vanish against the bleached background.\n- Texture handling - in high-detail areas (hair, fine ink lines) the filter sometimes softens micro-contrast, causing mild loss of crispness and edge definition.\n- Artifact control - faint banding and haloing around high-contrast edges in the comic and portrait (notably near bright window/sky) are perceptible and occasionally distract.\n\n**Judge rationale:** Infrared-reverie successfully delivers a distinct, cinematic infrared film identity with consistent halation and warm paper toning that reads well across photographic and illustrative material. It excels at creating depth and mood in portraits and narrative art, but its aggressive bloom and highlight treatment undermine information density in data visuals and can blur fine detail. For exhibition use, recommend a 'low-bloom' mode for charts and an optional sharpening pass to recover ink and hair micro-contrast.",
+      "criteria": {
+        "Concept": 0.8,
+        "Impact": 0.85,
+        "Color/Tone": 0.75,
+        "Structure": 0.65,
+        "Texture": 0.6,
+        "Robustness": 0.6,
+        "Artifacts": 0.65
+      },
+      "score-raw": 73.75,
+      "criteria-raw": {
+        "Concept": 8.0,
+        "Impact": 8.5,
+        "Color/Tone": 7.5,
+        "Structure": 6.5,
+        "Texture": 6.0,
+        "Robustness": 6.0,
+        "Artifacts": 6.5
+      },
+      "rank": 12,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "watercolor-bloom",
+      "name": "Watercolor Bloom",
+      "score": 0.735,
+      "feedback": "**What's good**\n\n- Clear, consistent wet-on-wet look across variants with believable pigment bleeds and softened edges that read as watercolor.\n- Dried-edge darkening is applied selectively, creating good figure-ground separation in the photo and comic panels.\n- Paper granulation texture is visually convincing on the portrait and comic, adding tactile richness.\n- Color harmony is warm and restrained in the photo and comic, producing a pleasing, museum-like palette.\n\n**What's not good**\n\n- Chart variant loses important structural legibility - axis lines, labels and small numerals are softened to the point of being hard to read.\n- Comic linework sometimes acquires a haloed softening that reduces crisp inking contrast expected in that style.\n- On the portrait, fine facial details (hair strands, jewelry) are slightly over-blurred, reducing photographic fidelity.\n- Artifact control shows light banding/halos around hard edges in high-contrast areas (chart text, comic inks).\n\n**Judge rationale:** watercolor-bloom succeeds as an evocative wet-on-wet interpreter: it produces convincing pigment diffusion, granulated paper feel, and moody edge darkening that flatter portrait and illustrative inputs. However, the same painterly diffusion undermines informational graphics where crispness and numeric legibility are paramount. For multi-domain use the filter is excellent for expressive and editorial work but should be adjusted or switched off for charts and small-type documents.",
+      "criteria": {
+        "Concept": 0.85,
+        "Impact": 0.8,
+        "Color/Tone": 0.75,
+        "Structure": 0.65,
+        "Texture": 0.78,
+        "Robustness": 0.62,
+        "Artifacts": 0.6
+      },
+      "score-raw": 73.5,
+      "criteria-raw": {
+        "Concept": 8.5,
+        "Impact": 8.0,
+        "Color/Tone": 7.5,
+        "Structure": 6.5,
+        "Texture": 7.8,
+        "Robustness": 6.2,
+        "Artifacts": 6.0
+      },
+      "rank": 13,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "origami-fold",
+      "name": "Origami Fold",
+      "score": 0.7316,
+      "feedback": "**What's good**\n\n- Consistent triangular tessellation applied across all three variants, giving a clear origami/faceted concept.\n- Crease-like internal shading and thin dark cell borders simulate fold shadows convincingly on cream paper ground.\n- Texture rendering creates believable paper relief; highlights and lowlights read as plausible folded planes.\n- Maintains recognizable color blocks in the chart and comic inputs, preserving semantic information (bars, panels).\n\n**What's not good**\n\n- Portrait detail is softened to the point that facial features lose fine definition and some identity cues are obscured.\n- Comic variant shows occasional over-contrast between facets (hard black seams) that break local shape continuity.\n- Chart variant's fine text and thin lines are reduced to fragmented tesserae making small labels illegible.\n- Minor haloing and irregular cell sizes at image edges create a patchy border that reduces compositional cleanliness.\n\n**Judge rationale:** Origami-fold is a coherent, well-realised NPR treatment that convincingly simulates triangular paper facets with angular shading. It excels at producing tactile materiality and preserves strong color masses, but it sacrifices small-scale legibility - especially text and fine facial detail - in service of the effect. For exhibition use where mood and surface matter more than microstructure, it is a strong choice; for information-dense images (charts, typographic comics) the algorithm needs tweaks to preserve thin-line fidelity.",
+      "criteria": {
+        "Concept": 0.82,
+        "Impact": 0.76,
+        "Color/Tone": 0.74,
+        "Structure": 0.63,
+        "Texture": 0.8,
+        "Robustness": 0.67,
+        "Artifacts": 0.68
+      },
+      "score-raw": 73.16,
+      "criteria-raw": {
+        "Concept": 8.2,
+        "Impact": 7.6,
+        "Color/Tone": 7.4,
+        "Structure": 6.3,
+        "Texture": 8.0,
+        "Robustness": 6.7,
+        "Artifacts": 6.8
+      },
+      "rank": 14,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "impasto-storm",
+      "name": "Impasto Storm",
+      "score": 0.7313,
+      "feedback": "**What's good**\n\n- Consistent heavy impasto texture across all three variants - visible canvas grain and directional brush/knife marks impart tactile presence.\n- High visual punch in photo and comic variants: saturated, warm color boosts and dramatic highlights create strong emotional emphasis.\n- Material simulation is convincing in figurative imagery: hair, fabric, and painted sky read as thick paint with clear stroke orientation.\n- Retention of comic linework and panel separations while adding painterly weight preserves the comic's expressive energy.\n\n**What's not good**\n\n- Chart variant suffers legibility loss: text and small numeric labels are softened and partially obscured by texture, reducing information utility.\n- Over-saturation in the photo leads to blown warm midtones (skin highlights) and some local color shifts that alter natural appearance.\n- Cross-input consistency uneven: excels on photographic and illustrated inputs but compromises functional clarity on data visuals.\n- Noticeable haloing and low-frequency posterization in flat areas (backgrounds and white space) introduce distracting artifacts.\n\n**Judge rationale:** Impasto-storm convincingly translates a palette-knife/oil aesthetic to photographs and illustrated comics, delivering strong tactile and chromatic expression. However the same aggressive texture and saturation that benefit portraits and panels undermines the chart's legibility and produces halos in flat fields. For exhibition, I recommend a tuned 'data-safe' mode that reduces texture scale and preserves edge contrast for informational graphics.",
+      "criteria": {
+        "Concept": 0.8,
+        "Impact": 0.86,
+        "Color/Tone": 0.78,
+        "Structure": 0.62,
+        "Texture": 0.84,
+        "Robustness": 0.6,
+        "Artifacts": 0.65
+      },
+      "score-raw": 73.13,
+      "criteria-raw": {
+        "Concept": 8.0,
+        "Impact": 8.6,
+        "Color/Tone": 7.8,
+        "Structure": 6.2,
+        "Texture": 8.4,
+        "Robustness": 6.0,
+        "Artifacts": 6.5
+      },
+      "rank": 15,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "gilded-woodblock",
+      "name": "Gilded Woodblock",
+      "score": 0.73,
+      "feedback": "**What's good**\n\n- Consistent ukiyo-e inspired palette across all three variants - warm sepia/gold tones evoke aged hand-printed paper effectively.\n- Photo and comic variants carry strong, expressive contouring and bold flat planes that read like carved woodblock layers.\n- Simulated grain and edged ink bleed produce convincing tactile woodblock texture and believable mark-making.\n\n**What's not good**\n\n- Chart variant loses important numeric and text legibility: thick outlines, posterization and texture overwhelm small type and axis marks.\n- Colors reduce to a narrow tonal banding that flattens midtone nuance; some highlights clip to harsh pale shapes.\n- Cross-input inconsistency: the filter handles figurative and comic linework well but collapses fine detail and annotations in data-dense imagery.\n- Visible artifacting around text and thin lines (haloing and irregular jagged edges) undermines precision work.\n\n**Judge rationale:** Gilded-woodblock is a convincing stylistic translation for portraits and comic panels: it preserves figure-ground separation and yields high-impact, print-like surfaces. However, the algorithm sacrifices micro-legibility and smooth tonal transitions required for charts and small type, producing banding and jagged artifacting that hamper informational clarity. In an exhibition context this filter reads as a compelling aesthetic treatment best reserved for narrative imagery rather than data visualization.",
+      "criteria": {
+        "Concept": 0.8,
+        "Impact": 0.85,
+        "Color/Tone": 0.7,
+        "Structure": 0.65,
+        "Texture": 0.8,
+        "Robustness": 0.6,
+        "Artifacts": 0.55
+      },
+      "score-raw": 73.0,
+      "criteria-raw": {
+        "Concept": 8.0,
+        "Impact": 8.5,
+        "Color/Tone": 7.0,
+        "Structure": 6.5,
+        "Texture": 8.0,
+        "Robustness": 6.0,
+        "Artifacts": 5.5
+      },
+      "rank": 16,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "arctic-crystal",
+      "name": "Arctic Crystal",
+      "score": 0.7285,
+      "feedback": "**What's good**\n\n- Clear, consistent Voronoi/crystal motif applied across all three variants - the angular cell borders read as 'frost' and carry a specular highlight that matches the intended cold, crystalline aesthetic.\n- Palette is tightly controlled to cool blues and high-contrast whites; highlights and subtle gradients produce believable sparkle and a convincing icy sheen.\n- On the photo and comic variants the filter enhances mood and adds dramatic figure-ground layering: faces and important shapes remain perceptible through the pattern, creating an interesting interplay between subject and ornamentation.\n\n**What's not good**\n\n- Chart variant: the strong, high-contrast cell lines and bright specular shards significantly reduce readability of text and numeric labels - key data elements are obscured.\n- In places the Voronoi segmentation cuts through important facial and line-art details (particularly eyes and speech balloons), producing awkward fragmentations that impair visual hierarchy.\n- Occasional over-bright hotspot clipping at cell intersections produces small blown-out areas that distract from subtle midtone information, especially on photographic skin tones.\n\n**Judge rationale:** Arctic-crystal is conceptually coherent and visually striking - it successfully translates a frozen Voronoi language into specular, icy surfaces. The filter performs best on image-driven and illustrative inputs where ornamentation can be treated as a compositional layer; it is less appropriate for information-dense materials like charts where legibility must be preserved. Minor artifacting around bright shards and fragmentations through faces should be addressed to increase broad applicability.",
+      "criteria": {
+        "Concept": 0.85,
+        "Impact": 0.8,
+        "Color/Tone": 0.8,
+        "Structure": 0.6,
+        "Texture": 0.75,
+        "Robustness": 0.6,
+        "Artifacts": 0.65
+      },
+      "score-raw": 72.85,
+      "criteria-raw": {
+        "Concept": 8.5,
+        "Impact": 8.0,
+        "Color/Tone": 8.0,
+        "Structure": 6.0,
+        "Texture": 7.5,
+        "Robustness": 6.0,
+        "Artifacts": 6.5
+      },
+      "rank": 17,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "byzantine-mosaic",
+      "name": "Byzantine Mosaic",
+      "score": 0.7265,
+      "feedback": "**What's good**\n\n- Consistent tiled tesserae motif across all three variants with convincing gold grout that sells the Byzantine mosaic idea.\n- Tile size and chunky tesserae create an immediate sculptural texture and pleasing tactile quality in the photo and comic variants.\n- Brightness variation applied per-tile adds believable hand-made irregularity rather than uniform cell-shading.\n- Color accents (blues, pinks, greens) remain readable through the grid, preserving important visual cues, especially in the chart.\n\n**What's not good**\n\n- Figure-ground separation suffers in the photo variant where gold grout and dark tiles collapse midtone detail, muting facial feature clarity.\n- Comic variant retains color but loses some midlevel contrast; outlines and important graphic edges are softened by the uniform grid.\n- Chart variant's white background plus heavy gold grout over-saturates whitespace, reducing numeric/typographic legibility and creating visual noise behind bars.\n- Some visible aliasing and uniform square boundaries produce a mechanical regularity that undercuts the intended hand-cut tesserae at close inspection.\n\n**Judge rationale:** This filter confidently delivers the Byzantine mosaic concept with a strong material presence: gold grout and chunky tiles read immediately and evocatively. It performs best where painterly color and broad shapes dominate (photo, comic) but is less successful for information-dense inputs like charts where the grid competes with data clarity. A refinement to grout translucency and adaptive tile size or edge irregularity would raise legibility and reduce the mechanical artifacting without sacrificing the expressive mosaic identity.",
+      "criteria": {
+        "Concept": 0.85,
+        "Impact": 0.78,
+        "Color/Tone": 0.7,
+        "Structure": 0.62,
+        "Texture": 0.8,
+        "Robustness": 0.6,
+        "Artifacts": 0.65
+      },
+      "score-raw": 72.65,
+      "criteria-raw": {
+        "Concept": 8.5,
+        "Impact": 7.8,
+        "Color/Tone": 7.0,
+        "Structure": 6.2,
+        "Texture": 8.0,
+        "Robustness": 6.0,
+        "Artifacts": 6.5
+      },
+      "rank": 18,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "signal-corrupted",
+      "name": "Signal Corrupted",
+      "score": 0.7225,
+      "feedback": "**What's good**\n\n- Consistent glitch vocabulary across all three variants: horizontal scan lines, RGB channel displacement, and neon block artifacts create a clear, recognizable aesthetic.\n- High visual drama in the photo and comic variants - the displacement and chromatic separation add cinematic tension and retro-digital atmosphere.\n- Texture feels deliberate: grain, halftone-like noise, and small block corruptions reinforce the intended digital-noise materiality.\n- Color accents (cyan/magenta/yellow) are used economically to punctuate composition without overwhelming the base image.\n\n**What's not good**\n\n- Legibility suffers in the chart variant - repeated horizontal bands and color offsets obscure numeric labels and legend items, undermining informational clarity.\n- Over-application of uniform horizontal lines occasionally flattens depth in the photo variant, eroding important figure-ground separation around the face.\n- Comic panel details (fine line art and text) are softened and sometimes doubled by chromatic shifts, reducing line crispness critical to that style.\n- Artifact control is uneven: some corrupt blocks read as purposeful, but others appear as distracting clipping/banding (especially where thin text overlaps heavy lines).\n\n**Judge rationale:** Signal-corrupted succeeds as a coherent glitch filter with a strong stylistic voice; its scan-line and RGB bleed motifs are applied consistently and with aesthetic conviction. However, the treatment is aggressive for data-dense or line-art inputs - it compromises readability where precise structure matters. In exhibition terms this is a memorable and evocative filter best used for portraiture and dramatic illustration rather than charts or small-type graphics.",
+      "criteria": {
+        "Concept": 0.9,
+        "Impact": 0.8,
+        "Color/Tone": 0.7,
+        "Structure": 0.55,
+        "Texture": 0.7,
+        "Robustness": 0.6,
+        "Artifacts": 0.6
+      },
+      "score-raw": 72.25,
+      "criteria-raw": {
+        "Concept": 9.0,
+        "Impact": 8.0,
+        "Color/Tone": 7.0,
+        "Structure": 5.5,
+        "Texture": 7.0,
+        "Robustness": 6.0,
+        "Artifacts": 6.0
+      },
+      "rank": 19,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "brutalist-duotone",
+      "name": "Brutalist Duotone",
+      "score": 0.7215,
+      "feedback": "**What's good**\n\n- Very faithful to the stated concept: uncompromising two-colour palette (acid yellow vs charcoal) across all three variants.\n- High visual punch in photographic and comic variants - bold figure/ground separation creates immediate Bauhaus-like presence.\n- Comic variant preserves linework and panel hierarchy well; halftone grain adds a convincing printed-comic texture.\n- Photographic portrait gains a striking silhouette and strong eye-line emphasis, turning a photo into an iconic poster.\n\n**What's not good**\n\n- Chart variant suffers: flat yellow background with heavy grain erodes text and data legibility (percent labels and small legend items are borderline illegible).\n- Texture/grain is inconsistent - attractive in comic but noisy in photo and destructive in the chart where it competes with typography.\n- Some midtone detail loss in the photo (hair and necklace areas) reduces subtlety; edges in shadows exhibit stair-stepping/artifacting.\n- High-contrast conversion sometimes collapses small shapes into blobs (notably small icons and thin chart ticks), harming functional use-cases.\n\n**Judge rationale:** This filter successfully commits to a militant two-colour identity that reads as purposefully Bauhaus and aggressive; it excels as a poster/comic aesthetic. However, its aggressive grain and clipping strategy, while expressive for imagery, undermines information graphics and fine typographic elements. For exhibition use, pair this filter with designs meant to be bold and symbolic rather than detail-dependent.",
+      "criteria": {
+        "Concept": 0.85,
+        "Impact": 0.8,
+        "Color/Tone": 0.7,
+        "Structure": 0.65,
+        "Texture": 0.6,
+        "Robustness": 0.6,
+        "Artifacts": 0.55
+      },
+      "score-raw": 72.15,
+      "criteria-raw": {
+        "Concept": 8.5,
+        "Impact": 8.0,
+        "Color/Tone": 7.0,
+        "Structure": 6.5,
+        "Texture": 6.0,
+        "Robustness": 6.0,
+        "Artifacts": 5.5
+      },
+      "rank": 20,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "cmyk-separation",
+      "name": "CMYK Separation",
+      "score": 0.7205,
+      "feedback": "**What's good**\n\n- Clear and consistent halftone concept: distinct CMYK dot screens and slight misregistration are evident across all variants.\n- High visual character in photo and comic variants - the dot screens create an evocative retro print aesthetic with pleasing contrast and silhouette retention.\n- Color separation produces recognizable cyan/yellow/magenta accents that enhance form and mood, especially in the comic panels where colors remain distinct.\n- Material quality: dots retain believable halftone grain and tactile sense rather than looking like simple pixelation.\n\n**What's not good**\n\n- Structure legibility suffers in the chart variant - small text and thin lines break down and become difficult to read because dot patterns and registration obscure fine detail.\n- Cross-input consistency: while expressive on photo and comic inputs, the filter fails to preserve data clarity for analytical graphics (bars, legend text).\n- Artifact control: minor moire and local over-inking appear in dense dark areas (notably in the noir panel and hair in the portrait), producing slight mushiness.\n- Color tonal mastery occasionally flattens midtones - skin and subtle gradients lose some nuance to the dot matrix, reducing depth.\n\n**Judge rationale:** This implementation is a convincing and visually delightful CMYK halftone emulator that nails the nostalgic press look for photographic and illustrative content. However, its application to informational graphics reveals limitations: fine typographic and chart elements are degraded by dot screening and misregistration. For exhibition use, it excels as an expressive stylistic filter but should be adjusted or masked when preserving legibility of data or small type is required.",
+      "criteria": {
+        "Concept": 0.9,
+        "Impact": 0.8,
+        "Color/Tone": 0.75,
+        "Structure": 0.65,
+        "Texture": 0.7,
+        "Robustness": 0.6,
+        "Artifacts": 0.65
+      },
+      "score-raw": 72.05,
+      "criteria-raw": {
+        "Concept": 9.0,
+        "Impact": 8.0,
+        "Color/Tone": 7.5,
+        "Structure": 6.5,
+        "Texture": 7.0,
+        "Robustness": 6.0,
+        "Artifacts": 6.5
+      },
+      "rank": 21,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "synthwave-horizon",
+      "name": "Synthwave Horizon",
+      "score": 0.7164,
+      "feedback": "**What's good**\n\n- Consistent 1980s vaporwave palette (purple->pink->cyan) applied across all three variants, which reinforces the intended aesthetic.\n- Strong cinematic scanline and chromatic-aberration treatments give the photo and comic variants an evocative retro-electronic atmosphere.\n- Grid/floor perspective is most successful on the chart: the perspective floor grid is visible and helps tie the composition to the synthwave concept.\n- Linework and halftone-like texture in the comic variant remain readable and energetic, preserving panel hierarchy and pop-art expressiveness.\n\n**What's not good**\n\n- Photo variant: facial detail and small features suffer from over-shifted chromatic aberration and horizontal banding, which cuts into figure-ground clarity.\n- Chart variant: color shifts reduce contrast on text and small numbers, impairing legibility of fine typography and legend elements.\n- Cross-input inconsistency: treatment intensity varies (photo and comic are strong; chart is stylized but loses critical data legibility).\n- Artifacts: horizontal scanlines sometimes align with important labels and bar values, creating distracting visual collisions.\n\n**Judge rationale:** The filter delivers a convincing vaporwave identity-rich magenta/purple gradients, scanline texture, and a usable grid-making the comic and photographic inputs visually striking. However, aggressive aberration and scanline placement occasionally undermine essential information (facial micro-contrast, numeric labels) in the photo and chart variants. For exhibition use, tune the chromatic offset and line density adaptively per input to preserve legibility while retaining the aesthetic punch.",
+      "criteria": {
+        "Concept": 0.85,
+        "Impact": 0.8,
+        "Color/Tone": 0.82,
+        "Structure": 0.66,
+        "Texture": 0.7,
+        "Robustness": 0.6,
+        "Artifacts": 0.68
+      },
+      "score-raw": 71.64,
+      "criteria-raw": {
+        "Concept": 8.5,
+        "Impact": 8.0,
+        "Color/Tone": 8.2,
+        "Structure": 6.6,
+        "Texture": 7.0,
+        "Robustness": 6.0,
+        "Artifacts": 6.8
+      },
+      "rank": 22,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "cathedral-glass",
+      "name": "Cathedral Glass",
+      "score": 0.7121,
+      "feedback": "**What's good**\n\n- Clear stained-glass concept: bold flat color regions separated by dark lead-like borders are consistently present in all three variants.\n- High visual punch: backlit glow and saturated hues (especially in the comic panel) create immediate emotional and decorative appeal.\n- NPR expressiveness: the filter simplifies forms into readable mosaics, giving photographic subjects a decorative, iconographic quality.\n- Color separation works well in colorful inputs (comic, chart) where palette blocks remain distinct.\n\n**What's not good**\n\n- Facial/figure detail suffers: in the photo variant the lead borders fragment faces into pixelated blocks that reduce important facial features and expression.\n- Chart/typography legibility is compromised: the filter converts small text and fine lines into blocky artifacts making numeric labels unreadable in the chart variant.\n- Inconsistent border weight and occasional haloing: some borders become uneven or semi-transparent causing local visual noise, most noticeable around high-contrast edges.\n- Artifacting and block quantization: visible stair-stepping and micro-block noise create distracting patches, especially in midtone transitions.\n\n**Judge rationale:** This filter convincingly translates the stained-glass idea into a bold decorative style and produces strong, iconic results on colorful, graphic inputs. It is less successful where fine detail or text legibility matters - facial nuance and chart labels are lost to block quantization and inconsistent border rendering. With improved edge consistency and reduced micro-artifacts it would be excellent across photo, comic, and chart domains.",
+      "criteria": {
+        "Concept": 0.82,
+        "Impact": 0.85,
+        "Color/Tone": 0.73,
+        "Structure": 0.62,
+        "Texture": 0.7,
+        "Robustness": 0.6,
+        "Artifacts": 0.58
+      },
+      "score-raw": 71.21,
+      "criteria-raw": {
+        "Concept": 8.2,
+        "Impact": 8.5,
+        "Color/Tone": 7.3,
+        "Structure": 6.2,
+        "Texture": 7.0,
+        "Robustness": 6.0,
+        "Artifacts": 5.8
+      },
+      "rank": 23,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "pop-art-screen",
+      "name": "Pop Art Screen",
+      "score": 0.7095,
+      "feedback": "**What's good**\n\n- Consistent Warhol-inspired motif: flat color zones with a regular Ben-Day dot overlay and bold contouring read clearly across all three variants.\n- High visual punch in the comic panel: outlines remain crisp and the halftone pattern boosts the retro comic feel without overwhelming linework.\n- Photo variant retains facial features and hair texture through delicate line-work and sparse color, preserving figure-ground separation.\n- Chart variant applies halftone fills to bars in a way that preserves the categorical color-coding, helping legend correspondence.\n\n**What's not good**\n\n- Color quantization is uneven: the photo has very desaturated fields (almost white) causing loss of flat color impact expected from Pop Art.\n- Dot scale and density are inconsistent between inputs - too sparse in the photo and slightly noisy in the chart, reducing perceived material coherence.\n- Thin outlines sometimes break into sketchy strokes (particularly in the photo), which undermines bold, uniform silhouette expected from the intended aesthetic.\n- Small text and fine numeric labels in the chart suffer from dot-induced speckle, reducing legibility at typical viewing sizes.\n\n**Judge rationale:** This filter admirably translates a Warhol/Ben-Day concept across disparate inputs, producing a recognizably pop-art effect while mostly honoring underlying structure. It excels on illustrative comic content where the halftone and outlines amplify meaning, but the photo and chart variants reveal inconsistencies in dot scale, color fill strength, and micro-artifact control that limit its professional application without per-input parameter tuning.",
+      "criteria": {
+        "Concept": 0.8,
+        "Impact": 0.75,
+        "Color/Tone": 0.68,
+        "Structure": 0.7,
+        "Texture": 0.72,
+        "Robustness": 0.6,
+        "Artifacts": 0.65
+      },
+      "score-raw": 70.95,
+      "criteria-raw": {
+        "Concept": 8.0,
+        "Impact": 7.5,
+        "Color/Tone": 6.8,
+        "Structure": 7.0,
+        "Texture": 7.2,
+        "Robustness": 6.0,
+        "Artifacts": 6.5
+      },
+      "rank": 24,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "charcoal-on-kraft",
+      "name": "Charcoal on Kraft",
+      "score": 0.7005,
+      "feedback": "**What's good**\n\n- Consistent warm kraft base tone across all three outputs reinforces the intended paper substrate.\n- Charcoal-like directional shading and mark suggestion are convincing on the photo and comic variants, adding expressive, hand-made character.\n- Pigment clumping and subtle fibre granularity are well simulated - visible noise and paper speckle read as material texture rather than digital noise.\n- Comic panels retain strong edge definition and panel framing, preserving the narrative structure.\n\n**What's not good**\n\n- Photo variant under-abstracts facial detail in deep shadows, flattening midtone modeling and losing some figure-ground separation.\n- Chart variant suffers from reduced contrast and washed legend/text - data labels and gridlines are faint and occasionally illegible.\n- Cross-input consistency varies: the filter leans heavy on dark blocking in some areas (comic noir panel) but becomes muddy in the bar chart, reducing utility for informational graphics.\n- Minor banding and grain aggregation present in flat-tone areas (chart background) distract from a fully convincing tactile finish.\n\n**Judge rationale:** This filter delivers a strong, evocative kraft-and-charcoal look that reads immediately as a handcrafted print across pictorial inputs. It excels at giving portraits and illustrated comics a rich, tactile presence, though it over-commitsto deep blocking in places and reduces legibility on information-dense charts. With a tuning pass to preserve thin text and subtle midtone detail, it would be a highly versatile and exhibition-ready non-photorealistic treatment.",
+      "criteria": {
+        "Concept": 0.8,
+        "Impact": 0.75,
+        "Color/Tone": 0.7,
+        "Structure": 0.6,
+        "Texture": 0.8,
+        "Robustness": 0.6,
+        "Artifacts": 0.65
+      },
+      "score-raw": 70.05,
+      "criteria-raw": {
+        "Concept": 8.0,
+        "Impact": 7.5,
+        "Color/Tone": 7.0,
+        "Structure": 6.0,
+        "Texture": 8.0,
+        "Robustness": 6.0,
+        "Artifacts": 6.5
+      },
+      "rank": 25,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "iron-rust",
+      "name": "Iron & Rust",
+      "score": 0.6835,
+      "feedback": "**What's good**\n\n- Strong thematic consistency: the warm orange-brown palette and fine speckled pitting read unmistakably as oxidized metal across all three variants.\n- Multi-scale corrosion texture: both macro (horizontal grain and streaking) and micro (dense dark speckles) are present, giving believable depth and age.\n- NPR expressiveness on comic: the rust treatment enhances mood for noir panels and integrates well with line art, adding period-authentic patina.\n- Photoreal portrait retains a convincing metal-tone treatment without completely destroying facial modeling - highlights and hair retain dimensionality.\n\n**What's not good**\n\n- Legibility loss on chart: speckle density and contrast significantly reduce readability of small text and fine gridlines, harming data communication.\n- Overly uniform spot pattern: the speckle placement repeats at similar scales and densities across all variants, reducing natural randomness and making artifacts look procedural.\n- Artifact halos and contrast clipping: darker speckles sit on top of important dark lines in the comic and on facial features in the photo, creating distracting visual noise.\n- Horizontal grain is subtle and inconsistent: intended striations are weak in the chart and uneven in the portrait, so the 'horizontal grain' aspect is not reliably present.\n\n**Judge rationale:** Iron-rust compellingly conveys oxidized metal through color and pitting texture, and it works particularly well as a mood layer for imagery and comics. However, the dense, repeating speckle pattern and insufficient control over small-scale contrast impair functional uses (charts, legible text) and introduce visible artifacts over critical details. With more randomized distribution, stronger control to preserve high-contrast edges and adaptive mask for text/faces, this filter could move from promising to demonstrably strong in mixed outputs.",
+      "criteria": {
+        "Concept": 0.8,
+        "Impact": 0.75,
+        "Color/Tone": 0.7,
+        "Structure": 0.55,
+        "Texture": 0.82,
+        "Robustness": 0.6,
+        "Artifacts": 0.5
+      },
+      "score-raw": 68.35,
+      "criteria-raw": {
+        "Concept": 8.0,
+        "Impact": 7.5,
+        "Color/Tone": 7.0,
+        "Structure": 5.5,
+        "Texture": 8.2,
+        "Robustness": 6.0,
+        "Artifacts": 5.0
+      },
+      "rank": 26,
+      "verdict": "Promising",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "noir-rain",
+      "name": "Noir Rain",
+      "score": 0.6805,
+      "feedback": "**What's good**\n\n- Clear, consistent motif: vertical rain streaks are applied uniformly across all variants and strongly support the film-noir-with-neon concept.\n- High emotional punch in the photo and noir comic panels - dramatic contrast and selective neon rim-lighting create cinematic figure-ground separation.\n- Stylized color accents (neon reds/yellows) read well against desaturated backgrounds, adding neon-reflection cues that reinforce the intent.\n- Texture feels intentionally analogue: grain and streaking convey wet surfaces and atmosphere, which suits the intended aesthetic.\n\n**What's not good**\n\n- Chart variant loses important data legibility: rain streaks and grain overlay obscure small text and percentage labels, reducing communicative function.\n- Comic variant shows inconsistent treatment between panels: the bright, colorful cartoon square competes awkwardly with the dark noir panel rather than blending as a unified series.\n- Photo face rendering includes posterization and haloed chromatic edges around highlights that look like processing artifacts rather than deliberate neon glow.\n- Artifacts: occasional banding, harsh clipping on highlights, and pixel-level color fringing reduce polish when inspected closely.\n\n**Judge rationale:** Noir-rain captures a compelling, cinematic mood and translates the vertical-rain + neon idea across very different inputs, which is notable. However, the filter sacrifices functional legibility in the chart and sometimes introduces posterization/halo artifacts that feel accidental. Refining highlight handling and reducing rain opacity over small typography would raise this from a strong stylistic effect to an exhibition-ready tool.",
+      "criteria": {
+        "Concept": 0.8,
+        "Impact": 0.75,
+        "Color/Tone": 0.7,
+        "Structure": 0.6,
+        "Texture": 0.65,
+        "Robustness": 0.6,
+        "Artifacts": 0.55
+      },
+      "score-raw": 68.05,
+      "criteria-raw": {
+        "Concept": 8.0,
+        "Impact": 7.5,
+        "Color/Tone": 7.0,
+        "Structure": 6.0,
+        "Texture": 6.5,
+        "Robustness": 6.0,
+        "Artifacts": 5.5
+      },
+      "rank": 27,
+      "verdict": "Strong",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "holographic-foil",
+      "name": "Holographic Foil",
+      "score": 0.6525,
+      "feedback": "**What's good**\n\n- Strong, consistent iridescent rainbow hue shifts that read as a metallic foil across all three variants.\n- High visual punch on the photo and comic inputs - the effect creates an arresting, surreal surface that draws attention to form and contours.\n- Color placement follows apparent surface gradients (faces, folds, comic linework), which supports the intended foil illusion.\n\n**What's not good**\n\n- Legibility suffers on information-dense content (chart): color noise and micro-patterns obscure numeric labels and reduce clarity.\n- On the photo, fine facial detail is both enhanced and disrupted - hair and skin show attractive sheen but also blocky posterization and chroma fringes around edges.\n- Comic variant has uneven application: line art remains mostly readable but large flat areas acquire distracting tiled/rectilinear pixelation, breaking the organic metallic illusion.\n- Noticeable artifacts: banding, blocky quantization, and aliasing visible in background regions and along high-contrast edges.\n\n**Judge rationale:** This filter convincingly communicates a holographic-foil concept with vivid rainbow shifts and gradient-driven color placement, producing striking, memorable results especially on portrait and illustrative inputs. However, the algorithm struggles with preserving information hierarchy and fine typographic legibility - micro-patterning and quantization artifacts become problematic on charts and in some large flat color regions. With improved artifact control and softer spatial filtering to preserve text and continuous tone, this is a strong candidate for creative use where legibility is secondary.",
+      "criteria": {
+        "Concept": 0.75,
+        "Impact": 0.8,
+        "Color/Tone": 0.7,
+        "Structure": 0.6,
+        "Texture": 0.65,
+        "Robustness": 0.55,
+        "Artifacts": 0.5
+      },
+      "score-raw": 65.25,
+      "criteria-raw": {
+        "Concept": 7.5,
+        "Impact": 8.0,
+        "Color/Tone": 7.0,
+        "Structure": 6.0,
+        "Texture": 6.5,
+        "Robustness": 5.5,
+        "Artifacts": 5.0
+      },
+      "rank": 28,
+      "verdict": "Promising",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "solarized-dream",
+      "name": "Solarized Dream",
+      "score": 0.6425,
+      "feedback": "**What's good**\n\n- Strong, consistent Sabattier-inspired tri-channel shifts produce a recognizably solarized aesthetic across all three variants.\n- High visual punch: the psychedelic red/green/blue separations create memorable, dramatic silhouettes and figure-ground contrast in the photo and comic variants.\n- Comic variant benefits from heightened chromatic separation that accentuates line-work and poster-like energy.\n- Photo retains believable highlight reversal on skin tones, producing an intriguing luminous portrait effect rather than purely destructive posterization.\n\n**What's not good**\n\n- Color balance is aggressive and uneven: per-channel thresholds yield large area color clipping that destroys subtle midtone gradations (especially visible in background areas).\n- Chart variant fails functional legibility - text and fine numeric labels are darkened or lost against neon edges, undermining information clarity.\n- Artifacts and haloing around high-contrast edges (particularly red/green chroma fringes) distract in the comic and photo images.\n- Cross-input consistency suffers: what reads as expressive in the photo/comic becomes obfuscating in data/typographic content.\n\n**Judge rationale:** Solarized-dream successfully translates the Sabattier concept into a vivid, psychedelic family of outputs, delivering strong emotional impact for photographic and illustrative material. However, its hard per-channel thresholds and extreme chroma boosts compromise subtle tonal modeling and renderings that require typographic or numerical legibility. For exhibition use, this filter shines as an expressive visual treatment but should be avoided for charts or any content where precise information must remain readable.",
+      "criteria": {
+        "Concept": 0.8,
+        "Impact": 0.85,
+        "Color/Tone": 0.65,
+        "Structure": 0.55,
+        "Texture": 0.6,
+        "Robustness": 0.5,
+        "Artifacts": 0.5
+      },
+      "score-raw": 64.25,
+      "criteria-raw": {
+        "Concept": 8.0,
+        "Impact": 8.5,
+        "Color/Tone": 6.5,
+        "Structure": 5.5,
+        "Texture": 6.0,
+        "Robustness": 5.0,
+        "Artifacts": 5.0
+      },
+      "rank": 29,
+      "verdict": "Promising",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gpt",
+      "filter-id": "pointillist-garden",
+      "name": "Pointillist Garden",
+      "score": 0.6225,
+      "feedback": "**What's good**\n\n- Strong adherence to a Seurat-like broken-colour dot vocabulary: discrete pigment-like dots with varied radius across all three variants.\n- Pleasant tactile impression - the dots read convincingly as pigment on a white ground and create an engaging painterly surface.\n- High visual presence on photographic and comic inputs: the treatment produces a decorative, expressive look that reads at gallery scale.\n- Color choices generally respect source hue relationships, preserving warm skin tones and cool shadows in the photo and vivid comic palette.\n\n**What's not good**\n\n- Heavy use of white/very light dots in the photo variant breaks figure-ground clarity and creates distracting speckling over facial features.\n- Comic variant shows uneven dot edge framing (thick black dot borders) that flattens internal detail and can obscure linework and type.\n- Chart variant fails to preserve small-scale structure and typographic legibility: legend text and axis labels become unreadable.\n- Artifact control inconsistent: haloing and clustered white noise appear in darker mid-tones, producing visual clutter rather than controlled broken colour.\n\n**Judge rationale:** Pointillist-garden delivers a convincing painterly dot texture and evocative color mixing on large, pictorial subjects, but the algorithm struggles with small-scale, high-contrast information. Portrait features are often masked by over-dense light speckling and charts/labels collapse into unreadable speckle. For exhibition use, tune dot density and exclude or reduce high-value (white) dot insertion over critical mid-tone detail to improve legibility while retaining the attractive material quality.\n\n## Research Basis Used\n\n- Gestalt perception and whole-form reading: https://en.wikipedia.org/wiki/Gestalt_psychology\n- Visual hierarchy and figure-ground emphasis: https://en.wikipedia.org/wiki/Visual_hierarchy\n- Color behavior, harmony/contrast traditions: https://en.wikipedia.org/wiki/Color_theory\n- Graphical perception (Cleveland & McGill lineage): https://en.wikipedia.org/wiki/Graphical_perception\n- Visual variables and information encoding (Bertin lineage): https://en.wikipedia.org/wiki/Map_symbol#Visual_variables\n- Perceptual structure and artifact thinking (SSIM/IQA framing): https://en.wikipedia.org/wiki/Structural_similarity and https://en.wikipedia.org/wiki/Image_quality\n- Non-photorealistic rendering context: https://en.wikipedia.org/wiki/Non-photorealistic_rendering",
+      "criteria": {
+        "Concept": 0.7,
+        "Impact": 0.75,
+        "Color/Tone": 0.65,
+        "Structure": 0.55,
+        "Texture": 0.7,
+        "Robustness": 0.5,
+        "Artifacts": 0.45
+      },
+      "score-raw": 62.25,
+      "criteria-raw": {
+        "Concept": 7.0,
+        "Impact": 7.5,
+        "Color/Tone": 6.5,
+        "Structure": 5.5,
+        "Texture": 7.0,
+        "Robustness": 5.0,
+        "Artifacts": 4.5
+      },
+      "rank": 30,
+      "verdict": "Promising",
+      "source": {
+        "file": "gpt-evaluation.md",
+        "section": "Scoring Table / Per-Filter Feedback"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "arctic-crystal",
+      "name": "Arctic Crystal",
+      "score": 0.7,
+      "feedback": "**Aesthetic Goal:** Icy Facets\n\n**Data Evidence:** Avg Color: [112, 141, 181] (Ice Blue)\n\n**Expert Critique:** Good tonal work in the blues. High unique color count suggests it's more of a color grade than a structural \"crystal\" generation.",
+      "criteria": {
+        "Overall": 0.7
+      },
+      "score-raw": 7.0,
+      "criteria-raw": {
+        "Overall": 7.0
+      },
+      "aesthetic-goal": "Icy Facets",
+      "data-evidence": "Avg Color: [112, 141, 181] (Ice Blue)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "brutalist-duotone",
+      "name": "Brutalist Duotone",
+      "score": 0.6,
+      "feedback": "**Aesthetic Goal:** Acid Yellow & Charcoal\n\n**Data Evidence:** Unique Colors: ~5000\n\n**Expert Critique:** Mixed Results. While the palette (Yellow/Black) is correct, the high count of unique colors suggests a \"soft\" duotone rather than the hard, uncompromising thresholding expected of Brutalism. Needs harder edges.\n\n**Needs Improvement:** \"Duotone\" implies TWO tones. The analysis shows a gradient. To fix this, implement a strict thresholding or quantization step to reduce the color count to exactly 2 (plus anti-aliasing). It needs to be bolder.",
+      "criteria": {
+        "Overall": 0.6
+      },
+      "score-raw": 6.0,
+      "criteria-raw": {
+        "Overall": 6.0
+      },
+      "aesthetic-goal": "Acid Yellow & Charcoal",
+      "data-evidence": "Unique Colors: ~5000",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "byzantine-mosaic",
+      "name": "Byzantine Mosaic",
+      "score": 0.5,
+      "feedback": "**Aesthetic Goal:** Tile Mosaic\n\n**Data Evidence:** Unique Colors: ~7000\n\n**Expert Critique:** Concept Failure. A true mosaic should have a low unique color count (limited tile set). 7000 colors implies a texture overlay, not a tile generation.",
+      "criteria": {
+        "Overall": 0.5
+      },
+      "score-raw": 5.0,
+      "criteria-raw": {
+        "Overall": 5.0
+      },
+      "aesthetic-goal": "Tile Mosaic",
+      "data-evidence": "Unique Colors: ~7000",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "cmyk-separation",
+      "name": "CMYK Separation",
+      "score": 0.3,
+      "feedback": "**Aesthetic Goal:** Print Process\n\n**Data Evidence:** Unique Colors: ~8000\n\n**Expert Critique:** \"Separation\" implies seeing the dots/layers. The high color count suggests it's just a blurry photo.",
+      "criteria": {
+        "Overall": 0.3
+      },
+      "score-raw": 3.0,
+      "criteria-raw": {
+        "Overall": 3.0
+      },
+      "aesthetic-goal": "Print Process",
+      "data-evidence": "Unique Colors: ~8000",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "cathedral-glass",
+      "name": "Cathedral Glass",
+      "score": 0.4,
+      "feedback": "**Aesthetic Goal:** Stained Glass\n\n**Data Evidence:** Avg Color: [235, 243, 240] (White)\n\n**Expert Critique:** Stained glass is light _transmitting_, meaning it should be vibrant and saturated. This is nearly white, looking more like a sketch of a window than the glass itself.",
+      "criteria": {
+        "Overall": 0.4
+      },
+      "score-raw": 4.0,
+      "criteria-raw": {
+        "Overall": 4.0
+      },
+      "aesthetic-goal": "Stained Glass",
+      "data-evidence": "Avg Color: [235, 243, 240] (White)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "charcoal-on-kraft",
+      "name": "Charcoal on Kraft",
+      "score": 0.8,
+      "feedback": "**Aesthetic Goal:** Sketch on Brown Paper\n\n**Data Evidence:** Avg Color: [138, 105, 68] (Kraft Brown)\n\n**Expert Critique:** Great Materiality. The average color perfectly matches Kraft paper. Low unique color count (~1200) suggests a true limited palette implementation.",
+      "criteria": {
+        "Overall": 0.8
+      },
+      "score-raw": 8.0,
+      "criteria-raw": {
+        "Overall": 8.0
+      },
+      "aesthetic-goal": "Sketch on Brown Paper",
+      "data-evidence": "Avg Color: [138, 105, 68] (Kraft Brown)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "copper-plate-etching",
+      "name": "Copper Plate Etching",
+      "score": 0.5,
+      "feedback": "**Aesthetic Goal:** Intaglio Print\n\n**Data Evidence:** Avg Color: [206, 188, 164]\n\n**Expert Critique:** Captures the paper tone, but lacks the deep, dark ink contrast required for etching.",
+      "criteria": {
+        "Overall": 0.5
+      },
+      "score-raw": 5.0,
+      "criteria-raw": {
+        "Overall": 5.0
+      },
+      "aesthetic-goal": "Intaglio Print",
+      "data-evidence": "Avg Color: [206, 188, 164]",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "cross-stitch-canvas",
+      "name": "Cross-Stitch Canvas",
+      "score": 0.4,
+      "feedback": "**Aesthetic Goal:** Embroidery\n\n**Data Evidence:** Unique Colors: ~1300\n\n**Expert Critique:** Low contrast. The texture might be there, but the colors don't pop like thread.",
+      "criteria": {
+        "Overall": 0.4
+      },
+      "score-raw": 4.0,
+      "criteria-raw": {
+        "Overall": 4.0
+      },
+      "aesthetic-goal": "Embroidery",
+      "data-evidence": "Unique Colors: ~1300",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "gilded-woodblock",
+      "name": "Gilded Woodblock",
+      "score": 0.7,
+      "feedback": "**Aesthetic Goal:** Gold Leaf & Ink\n\n**Data Evidence:** Avg Color: [85, 69, 54] (Sepia/Bronze)\n\n**Expert Critique:** Good earthy tones. The standard deviation suggests good texture, but it might be too dark (dominant color is near black) to fully read as \"gold\" without specular highlights.",
+      "criteria": {
+        "Overall": 0.7
+      },
+      "score-raw": 7.0,
+      "criteria-raw": {
+        "Overall": 7.0
+      },
+      "aesthetic-goal": "Gold Leaf & Ink",
+      "data-evidence": "Avg Color: [85, 69, 54] (Sepia/Bronze)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "graphite-study",
+      "name": "Graphite Study",
+      "score": 0.5,
+      "feedback": "**Aesthetic Goal:** Pencil Sketch\n\n**Data Evidence:** Avg Color: [237, 232, 220]\n\n**Expert Critique:** Very faint. Standard deviation is low, implying weak lines. Needs darker blacks to simulate graphite softness.",
+      "criteria": {
+        "Overall": 0.5
+      },
+      "score-raw": 5.0,
+      "criteria-raw": {
+        "Overall": 5.0
+      },
+      "aesthetic-goal": "Pencil Sketch",
+      "data-evidence": "Avg Color: [237, 232, 220]",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "holographic-foil",
+      "name": "Holographic Foil",
+      "score": 0.4,
+      "feedback": "**Aesthetic Goal:** Iridescent\n\n**Data Evidence:** Avg Color: [241, 241, 244]\n\n**Expert Critique:** Just looks white/grey. Holography requires shifting color gradients, which are hard to capture in a static average, but the lack of variance suggests it's flat.",
+      "criteria": {
+        "Overall": 0.4
+      },
+      "score-raw": 4.0,
+      "criteria-raw": {
+        "Overall": 4.0
+      },
+      "aesthetic-goal": "Iridescent",
+      "data-evidence": "Avg Color: [241, 241, 244]",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "impasto-storm",
+      "name": "Impasto Storm",
+      "score": 0.5,
+      "feedback": "**Aesthetic Goal:** Thick Paint\n\n**Data Evidence:** Unique Colors: ~8000\n\n**Expert Critique:** \"Impasto\" implies texture depth. With 8000+ unique colors, it's likely just a noisy photo rather than a structured simulation of brush strokes. Digital impasto requires displacement mapping, not just color noise.",
+      "criteria": {
+        "Overall": 0.5
+      },
+      "score-raw": 5.0,
+      "criteria-raw": {
+        "Overall": 5.0
+      },
+      "aesthetic-goal": "Thick Paint",
+      "data-evidence": "Unique Colors: ~8000",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "infrared-reverie",
+      "name": "Infrared Reverie",
+      "score": 0.3,
+      "feedback": "**Aesthetic Goal:** False Color IR\n\n**Data Evidence:** Avg Color: [100, 98, 93] (Grey)\n\n**Expert Critique:** Major Fail. Aerochrome infrared turns foliage RED/PINK. This image is grey/brown. It completely misses the signature aesthetic of the medium.",
+      "criteria": {
+        "Overall": 0.3
+      },
+      "score-raw": 3.0,
+      "criteria-raw": {
+        "Overall": 3.0
+      },
+      "aesthetic-goal": "False Color IR",
+      "data-evidence": "Avg Color: [100, 98, 93] (Grey)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "iron-rust",
+      "name": "Iron & Rust",
+      "score": 0.7,
+      "feedback": "**Aesthetic Goal:** Oxidized Metal\n\n**Data Evidence:** Avg Color: [143, 77, 32] (Rust Orange)\n\n**Expert Critique:** Strong adherence to the specific orange/brown rust tones. Good texture, though perhaps a bit too uniform in its noise.",
+      "criteria": {
+        "Overall": 0.7
+      },
+      "score-raw": 7.0,
+      "criteria-raw": {
+        "Overall": 7.0
+      },
+      "aesthetic-goal": "Oxidized Metal",
+      "data-evidence": "Avg Color: [143, 77, 32] (Rust Orange)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "linocut-bold",
+      "name": "Linocut Bold",
+      "score": 0.5,
+      "feedback": "**Aesthetic Goal:** Block Print\n\n**Data Evidence:** Avg Color: [218, 214, 200]\n\n**Expert Critique:** Too light and low contrast. Linocuts are defined by high-contrast black ink. This looks like a faint stamp.",
+      "criteria": {
+        "Overall": 0.5
+      },
+      "score-raw": 5.0,
+      "criteria-raw": {
+        "Overall": 5.0
+      },
+      "aesthetic-goal": "Block Print",
+      "data-evidence": "Avg Color: [218, 214, 200]",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "neon-blueprint",
+      "name": "Neon Blueprint",
+      "score": 0.9,
+      "feedback": "**Aesthetic Goal:** Architectural Schematic\n\n**Data Evidence:** Avg Color: [6, 23, 39] (Deep Navy)\n\n**Expert Critique:** Deep, rich saturation. The extremely dark average color with high local contrast suggests effective line-work isolation on a dark background.",
+      "criteria": {
+        "Overall": 0.9
+      },
+      "score-raw": 9.0,
+      "criteria-raw": {
+        "Overall": 9.0
+      },
+      "aesthetic-goal": "Architectural Schematic",
+      "data-evidence": "Avg Color: [6, 23, 39] (Deep Navy)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "noir-rain",
+      "name": "Noir Rain",
+      "score": 0.8,
+      "feedback": "**Aesthetic Goal:** Atmospheric B&W\n\n**Data Evidence:** Avg Color: [34, 33, 31]\n\n**Expert Critique:** Very dark, moody. Near-monochrome statistics support the \"Noir\" label. Good dynamic range for a low-key image.",
+      "criteria": {
+        "Overall": 0.8
+      },
+      "score-raw": 8.0,
+      "criteria-raw": {
+        "Overall": 8.0
+      },
+      "aesthetic-goal": "Atmospheric B&W",
+      "data-evidence": "Avg Color: [34, 33, 31]",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "origami-fold",
+      "name": "Origami Fold",
+      "score": 0.4,
+      "feedback": "**Aesthetic Goal:** Paper Folding\n\n**Data Evidence:** Unique Colors: ~9000\n\n**Expert Critique:** High color count implies it's just the photo with some lines drawn on it, not a geometric reconstruction.",
+      "criteria": {
+        "Overall": 0.4
+      },
+      "score-raw": 4.0,
+      "criteria-raw": {
+        "Overall": 4.0
+      },
+      "aesthetic-goal": "Paper Folding",
+      "data-evidence": "Unique Colors: ~9000",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "pointillist-garden",
+      "name": "Pointillist Garden",
+      "score": 0.5,
+      "feedback": "**Aesthetic Goal:** Seurat-style Dots\n\n**Data Evidence:** Unique Colors: ~1400\n\n**Expert Critique:** The low color count is promising for a limited palette, but the average color is very white. It risks looking like faint noise on a white background rather than a rich field of dots. Needs more saturation.\n\n**Needs Improvement:** The current implementation seems too timid. Pointillism is about optical mixing of saturated colors. The data suggests a washed-out image. Increase the dot opacity and saturation to make the colors vibrate against each other.",
+      "criteria": {
+        "Overall": 0.5
+      },
+      "score-raw": 5.0,
+      "criteria-raw": {
+        "Overall": 5.0
+      },
+      "aesthetic-goal": "Seurat-style Dots",
+      "data-evidence": "Unique Colors: ~1400",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "pop-art-screen",
+      "name": "Pop Art Screen",
+      "score": 0.5,
+      "feedback": "**Aesthetic Goal:** Warhol Silkscreen\n\n**Data Evidence:** Unique Colors: ~5000\n\n**Expert Critique:** Far too many unique colors for a silkscreen print, which should be blocky and flat. It looks like a photo with a filter, not a print.",
+      "criteria": {
+        "Overall": 0.5
+      },
+      "score-raw": 5.0,
+      "criteria-raw": {
+        "Overall": 5.0
+      },
+      "aesthetic-goal": "Warhol Silkscreen",
+      "data-evidence": "Unique Colors: ~5000",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "prussian-cyanotype",
+      "name": "Prussian Cyanotype",
+      "score": 0.9,
+      "feedback": "**Aesthetic Goal:** Blueprint/Sun Print\n\n**Data Evidence:** Avg Color: [169, 185, 206] (Steel Blue)\n\n**Expert Critique:** Excellent color mapping. The dominant color [206, 221, 241] captures the exposed paper look perfectly. The tonal range feels authentic to the chemical process.\n\n**Top Picks:** A beautiful example of historical emulation. The shift towards the specific Prussian Blue portion of the spectrum is handled with subtlety, preserving the \"exposed\" look of the highlights.",
+      "criteria": {
+        "Overall": 0.9
+      },
+      "score-raw": 9.0,
+      "criteria-raw": {
+        "Overall": 9.0
+      },
+      "aesthetic-goal": "Blueprint/Sun Print",
+      "data-evidence": "Avg Color: [169, 185, 206] (Steel Blue)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "risograph-reverie",
+      "name": "Risograph Reverie",
+      "score": 0.5,
+      "feedback": "**Aesthetic Goal:** Riso Print\n\n**Data Evidence:** Unique Colors: ~1700\n\n**Expert Critique:** Better color quantization than Pop Art, but still too smooth. Riso is defined by dithering and grain, which isn't apparent in the stats.",
+      "criteria": {
+        "Overall": 0.5
+      },
+      "score-raw": 5.0,
+      "criteria-raw": {
+        "Overall": 5.0
+      },
+      "aesthetic-goal": "Riso Print",
+      "data-evidence": "Unique Colors: ~1700",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "signal-corrupted",
+      "name": "Signal Corrupted",
+      "score": 0.7,
+      "feedback": "**Aesthetic Goal:** Glitch Art\n\n**Data Evidence:** Std Dev: [65, 57, 58] (High Noise)\n\n**Expert Critique:** The statistics show good disruption (high variance). It feels intentional rather than just broken.",
+      "criteria": {
+        "Overall": 0.7
+      },
+      "score-raw": 7.0,
+      "criteria-raw": {
+        "Overall": 7.0
+      },
+      "aesthetic-goal": "Glitch Art",
+      "data-evidence": "Std Dev: [65, 57, 58] (High Noise)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "silver-daguerreotype",
+      "name": "Silver Daguerreotype",
+      "score": 0.6,
+      "feedback": "**Aesthetic Goal:** 19th Century Photo\n\n**Data Evidence:** Avg Color: [50, 49, 49] (Dark Grey)\n\n**Expert Critique:** Very dark. Daguerreotypes usually have a metallic sheen (lighter mid-tones). This feels more like a generic dark B&W filter.",
+      "criteria": {
+        "Overall": 0.6
+      },
+      "score-raw": 6.0,
+      "criteria-raw": {
+        "Overall": 6.0
+      },
+      "aesthetic-goal": "19th Century Photo",
+      "data-evidence": "Avg Color: [50, 49, 49] (Dark Grey)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "solarized-dream",
+      "name": "Solarized Dream",
+      "score": 0.8,
+      "feedback": "**Aesthetic Goal:** Surreal Color Inversion\n\n**Data Evidence:** Dominant: [164, 111, 0] (Deep Amber)\n\n**Expert Critique:** Successfully achieves that \"burnt\" look characteristic of the Sabattier effect. Strong, warm dominance.",
+      "criteria": {
+        "Overall": 0.8
+      },
+      "score-raw": 8.0,
+      "criteria-raw": {
+        "Overall": 8.0
+      },
+      "aesthetic-goal": "Surreal Color Inversion",
+      "data-evidence": "Dominant: [164, 111, 0] (Deep Amber)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "synthwave-horizon",
+      "name": "Synthwave Horizon",
+      "score": 0.6,
+      "feedback": "**Aesthetic Goal:** Retro 80s\n\n**Data Evidence:** Avg Color: [137, 54, 105] (Purple/Pink)\n\n**Expert Critique:** Nails the palette (Purple/Pink/Teal). However, the high unique color count (~9500) suggests it's just a gradient map overlay rather than a true vector-style synthwave generation.",
+      "criteria": {
+        "Overall": 0.6
+      },
+      "score-raw": 6.0,
+      "criteria-raw": {
+        "Overall": 6.0
+      },
+      "aesthetic-goal": "Retro 80s",
+      "data-evidence": "Avg Color: [137, 54, 105] (Purple/Pink)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "terminal-matrix",
+      "name": "Terminal Matrix",
+      "score": 1.0,
+      "feedback": "**Aesthetic Goal:** Phosphor Green CRT\n\n**Data Evidence:** Avg Color: [13, 201, 56] (Vivid Green)\n\n**Expert Critique:** Perfect Execution. The color data confirms a strict adherence to the phosphor green palette. High contrast (std dev: 66) ensures readability. This is the gold standard for retro-computing filters.\n\n**Top Picks:** This is a masterclass in constraint. By forcing the image into a specific, narrow color space (Phosphor Green), it creates a cohesive and instantly recognizable look. The data shows it achieves high contrast within that narrow band, which is exactly what a CRT monitor does.",
+      "criteria": {
+        "Overall": 1.0
+      },
+      "score-raw": 10.0,
+      "criteria-raw": {
+        "Overall": 10.0
+      },
+      "aesthetic-goal": "Phosphor Green CRT",
+      "data-evidence": "Avg Color: [13, 201, 56] (Vivid Green)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "thermal-scan",
+      "name": "Thermal Scan",
+      "score": 0.4,
+      "feedback": "**Aesthetic Goal:** Heat Map\n\n**Data Evidence:** Avg Color: [132, 122, 119]\n\n**Expert Critique:** The average color is grey. A thermal scan should be vibrant (Blue/Red/Yellow). This looks desaturated and incorrect.",
+      "criteria": {
+        "Overall": 0.4
+      },
+      "score-raw": 4.0,
+      "criteria-raw": {
+        "Overall": 4.0
+      },
+      "aesthetic-goal": "Heat Map",
+      "data-evidence": "Avg Color: [132, 122, 119]",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "verdigris-antiquity",
+      "name": "Verdigris Antiquity",
+      "score": 0.7,
+      "feedback": "**Aesthetic Goal:** Aged Copper\n\n**Data Evidence:** Avg Color: [76, 57, 33]\n\n**Expert Critique:** Captures the dark grime well, but the dominant color isn't the expected bright teal/green of verdigris. It's more \"muddy bronze\".",
+      "criteria": {
+        "Overall": 0.7
+      },
+      "score-raw": 7.0,
+      "criteria-raw": {
+        "Overall": 7.0
+      },
+      "aesthetic-goal": "Aged Copper",
+      "data-evidence": "Avg Color: [76, 57, 33]",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "gemini",
+      "filter-id": "watercolor-bloom",
+      "name": "Watercolor Bloom",
+      "score": 0.6,
+      "feedback": "**Aesthetic Goal:** Wet-on-wet\n\n**Data Evidence:** Avg Color: [221, 224, 223] (Paper White)\n\n**Expert Critique:** The high brightness suggests it preserves the \"paper\" look well, but the low standard deviation implies it might be washed out or lacking the high-contrast \"bleed\" edges that define good watercolor simulations.",
+      "criteria": {
+        "Overall": 0.6
+      },
+      "score-raw": 6.0,
+      "criteria-raw": {
+        "Overall": 6.0
+      },
+      "aesthetic-goal": "Wet-on-wet",
+      "data-evidence": "Avg Color: [221, 224, 223] (Paper White)",
+      "source": {
+        "file": "gemini-evaluation.md",
+        "section": "Scoring Table"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "thermal-scan",
+      "name": "Thermal Scan",
+      "score": 0.9,
+      "feedback": "**Concept:** False-color thermal imaging simulation using an 8-stop scientific LUT (black → purple → blue → cyan → green → yellow → orange → red → white), with CRT scanlines.\n\n**What works:**\n\n- The 8-stop LUT is perfectly calibrated: the warmest areas (faces, bar tops, highlighted panels) reach near-white; cool areas settle into deep blue-purple. This is how real thermal cameras render subjects — the temperature gradient is believable.\n- On the **photo**, this is one of the strongest outputs in the entire gallery. The face reads like a genuine FLIR camera image. The scanline texture adds authentic CRT monitor warmth.\n- On the **comic**, all three panels work: the noir detective scene reads as if scanned at night; the magical girl panel becomes an alien heat vision of innocence; the fight scene becomes electric. This filter is the most consistent performer across panels.\n- On the **chart**, the bars are beautifully color-coded by height — the tallest bar (North America) is the hottest red-white; the shortest is cool purple. The bars accidentally become a thermal heat map of sales importance. Conceptually richer than the original.\n\n**What doesn't work:**\n\n- Virtually nothing fails here. If forced to criticize: the scanlines are faint to the point of being nearly invisible on some light areas; a slightly more aggressive CRT raster would have added more period-correct texture.\n\n**Verdict:** The most technically accomplished and consistently excellent filter in the gallery. Authentic, coherent, versatile, and beautiful. A clear gold standard.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.9,
+        "Conceptual Coherence": 0.9,
+        "Cross-Input Versatility": 0.9,
+        "Technical Execution": 0.9,
+        "Artistic Impact": 0.9
+      },
+      "score-raw": 9.0,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 9.0,
+        "Conceptual Coherence": 9.0,
+        "Cross-Input Versatility": 9.0,
+        "Technical Execution": 9.0,
+        "Artistic Impact": 9.0
+      },
+      "rank": 1,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "neon-blueprint",
+      "name": "Neon Blueprint",
+      "score": 0.88,
+      "feedback": "**Concept:** Architectural blueprint aesthetic — dark navy background, cyan edge-glow lines, blueprint grid overlay, engineering annotation style.\n\n**What works:**\n\n- The **chart** output is exceptional. Cyan-glowing bar edges on navy behave like luminous engineering diagrams. The title text \"Q1 Global Sales Distribution\" feels like a technical annotation on a circuit schematic. This is the most dramatic and original chart transformation in the gallery.\n- The **comic** is outstanding. The noir detective's linework glows with cyan precision — MYSTERY STREET reads like a neon sign against night sky. The magical girl's magical effects take on the quality of energy fields in a technical hologram.\n- The **photo** is compelling — edge detection reveals the portrait as a luminous architectural drawing, as if a master draughtsman had traced the subject in light.\n- The navy-to-black background gradient is correctly calibrated (not pure black, not dark blue — the specific mid-navy of actual blueprint paper is nailed).\n\n**What doesn't work:**\n\n- On the photo, some areas of very fine detail (hair texture, fabric) blur into undifferentiated cyan noise rather than crisp lines. A smarter edge-detection threshold would have preserved more mid-frequency structure.\n\n**Verdict:** Among the most visually thrilling filters in the gallery. Transforms every input into something that feels both technically precise and mysteriously beautiful. High concept, high craft.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.9,
+        "Conceptual Coherence": 0.9,
+        "Cross-Input Versatility": 0.8,
+        "Technical Execution": 0.9,
+        "Artistic Impact": 0.9
+      },
+      "score-raw": 8.8,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 9.0,
+        "Conceptual Coherence": 9.0,
+        "Cross-Input Versatility": 8.0,
+        "Technical Execution": 9.0,
+        "Artistic Impact": 9.0
+      },
+      "rank": 2,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "cmyk-separation",
+      "name": "CMYK Separation",
+      "score": 0.86,
+      "feedback": "**Concept:** Simulated four-color printing (Cyan, Magenta, Yellow, Black) with halftone dots at traditional screen angles (C: 15°, M: 75°, Y: 0°, K: 45°) and deliberate misregistration.\n\n**What works:**\n\n- The screen angles are technically correct — this is the single most impressive act of medium fidelity in the gallery. Most filters simulate a visual _appearance_; this one simulates the _process_. The moiré that emerges from the angular relationship between screens is authentic.\n- On the **photo**, the halftone dots are large enough to be read individually. The face shows tonal gradation through dot density — highlights are sparse dots, shadows are near-solid ink. The misregistration creates color fringing at the portrait edges that matches offset lithography imperfection.\n- On the **comic**, the result feels like a scanned panel from a 1970s newsprint comic — the color dots cluster in the inks, and the misregistration makes the image feel physically real.\n- On the **chart**, the dots are smaller but visible; the bars remain readable and the halftone gives the whole piece the feel of a printed infographic from a 1960s magazine.\n\n**What doesn't work:**\n\n- The chart color assignment is somewhat arbitrary — the bars don't represent their original colors as faithfully as they could; they feel homogenized toward the CMYK primaries. A more sophisticated gamut-mapping step would improve fidelity.\n\n**Verdict:** This is a filter about _how printing works_, not just what printing looks like. That conceptual depth puts it in the top tier. Required viewing for anyone interested in the intersection of computation and craft.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.9,
+        "Conceptual Coherence": 0.9,
+        "Cross-Input Versatility": 0.8,
+        "Technical Execution": 0.8,
+        "Artistic Impact": 0.9
+      },
+      "score-raw": 8.6,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 9.0,
+        "Conceptual Coherence": 9.0,
+        "Cross-Input Versatility": 8.0,
+        "Technical Execution": 8.0,
+        "Artistic Impact": 9.0
+      },
+      "rank": 3,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "signal-corrupted",
+      "name": "Signal Corrupted",
+      "score": 0.86,
+      "feedback": "**Concept:** Glitch aesthetics — scan-line displacement, RGB channel bleed, block-level corruption, analog signal degradation.\n\n**What works:**\n\n- The **comic** is the standout output in the gallery for emotional impact. The RGB channel separation creates a 3D anaglyph-like effect on the MYSTERY STREET cover, while the scan-line displacement gives the panels the stuttering quality of a VHS tape starting to fail. The result is like finding a corrupted backup of something irreplaceable — profoundly melancholic.\n- The **photo** is perfectly calibrated: the glitch is present but _restrained_. The RGB fringing at the portrait edges is exactly what a slightly misaligned CRT would produce; the block corruption is subtle enough to feel like a transmission error, not deliberate destruction. This is the rarest quality in glitch art: knowing when to stop.\n- The **chart** goes further — bright RGB splitting of the bars creates a neon chaos that is visually exciting without destroying data readability.\n- Conceptually, this filter engages with glitch art's theoretical tradition (Menkman, Cascone): the idea that errors reveal the normally-invisible infrastructure of digital image-making.\n\n**What doesn't work:**\n\n- The block corruption in the photo occasionally obscures features in ways that feel random rather than intentional. Greater spatial awareness — avoiding the face's key features — would have improved the photo result.\n\n**Verdict:** The most theoretically sophisticated filter in the gallery, and one of the most emotionally resonant. The comic output alone would justify its inclusion in a curated exhibition.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.9,
+        "Conceptual Coherence": 0.9,
+        "Cross-Input Versatility": 0.8,
+        "Technical Execution": 0.8,
+        "Artistic Impact": 0.9
+      },
+      "score-raw": 8.6,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 9.0,
+        "Conceptual Coherence": 9.0,
+        "Cross-Input Versatility": 8.0,
+        "Technical Execution": 8.0,
+        "Artistic Impact": 9.0
+      },
+      "rank": 3,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "arctic-crystal",
+      "name": "Arctic Crystal",
+      "score": 0.84,
+      "feedback": "**Concept:** Voronoi-cell frost crystal pattern with cold blue palette, simulating ice formation on a window.\n\n**What works:**\n\n- The Voronoi cell structure is organically varied — cells are not uniform hexagons but irregular polygons that genuinely resemble crystal growth patterns. The cell boundaries have the faint luminosity of ice facets catching light.\n- The cold blue-white palette is precisely calibrated: it doesn't read as \"blue photo\" but as \"frozen surface.\" The saturation of the original is preserved as hints of color visible through the frost.\n- Works across all three inputs: the chart becomes a frozen data artifact; the photo portrait gains an otherworldly, preserved-in-ice quality; the comic panels read like a found object from a frozen excavation.\n\n**What doesn't work:**\n\n- On some light areas of the chart (background, white space), the crystal overlay becomes nearly invisible — the filter needs a higher base contrast to remain legible on pale inputs.\n- The concept is atmospheric rather than conceptually complex. \"Frost on glass\" is beautiful but doesn't carry the intellectual weight of, say, the CMYK or glitch filters.\n\n**Verdict:** Consistently beautiful. Atmospheric and technically accomplished. One of the most original concepts in the gallery.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.8,
+        "Conceptual Coherence": 0.9,
+        "Cross-Input Versatility": 0.8,
+        "Technical Execution": 0.8,
+        "Artistic Impact": 0.9
+      },
+      "score-raw": 8.4,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 8.0,
+        "Conceptual Coherence": 9.0,
+        "Cross-Input Versatility": 8.0,
+        "Technical Execution": 8.0,
+        "Artistic Impact": 9.0
+      },
+      "rank": 5,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "gilded-woodblock",
+      "name": "Gilded Woodblock",
+      "score": 0.82,
+      "feedback": "**Concept:** Japanese ukiyo-e woodblock print simulation — posterized palette in indigo/celadon/vermilion/gold, edge-carved relief lines, registration marks, and traditional composition principles.\n\n**What works:**\n\n- The palette is the most art-historically specific in the gallery. Indigo, celadon, gold-ochre, and deep vermilion are the exact pigments used in Hiroshige and Hokusai. A viewer with knowledge of Japanese printmaking would immediately recognize the reference.\n- On the **photo**, the portrait acquires the quality of a museum woodblock — the face becomes posterized into broad areas of color, and the edge lines suggest the carving of the woodblock itself. This is one of the best photo transformations in the gallery.\n- The **chart** works surprisingly well: the bars become color-coded regions in ukiyo-e palettes, and the overall feel is of a traditional illustrated scroll with quantitative annotations.\n- Registration marks in the corners are a beautiful detail — they show that the filter understands printing as a _process_, not just an appearance.\n\n**What doesn't work:**\n\n- On the **comic**, the vibrant ukiyo-e palette occasionally clashes with the modern anime aesthetic of the magical girl panels. The filter works better on imagery that has fewer pre-existing color commitments.\n\n**Verdict:** The deepest art-historical grounding of any filter in the gallery. A knowledgeable viewer would find genuine delight in its specificity.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.8,
+        "Conceptual Coherence": 0.9,
+        "Cross-Input Versatility": 0.7,
+        "Technical Execution": 0.8,
+        "Artistic Impact": 0.9
+      },
+      "score-raw": 8.2,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 8.0,
+        "Conceptual Coherence": 9.0,
+        "Cross-Input Versatility": 7.0,
+        "Technical Execution": 8.0,
+        "Artistic Impact": 9.0
+      },
+      "rank": 6,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "prussian-cyanotype",
+      "name": "Prussian Cyanotype",
+      "score": 0.81,
+      "feedback": "**Concept:** Iron-salt cyanotype process — prussian blue monochrome, watercolor paper texture, characteristic tonal inversion (shadows dark blue, highlights near-white).\n\n**What works:**\n\n- Prussian blue is an extremely specific color. This filter uses it correctly — not navy, not cornflower blue, but the deep, slightly greenish blue of iron-salt chemistry. This specificity is what separates authentic medium simulation from generic \"blue photo.\"\n- The **photo** portrait is one of the most beautiful outputs in the gallery. The cyanotype process historically made its subjects feel both intimate and ancient — this filter captures that quality. The face retains its structure while acquiring the quality of a 19th-century scientific photograph.\n- Paper texture is appropriate and not overdone. The chart remains fully readable.\n\n**What doesn't work:**\n\n- The **comic** result, while atmospheric, loses some of the ink line contrast that makes comics readable. The dark panels (noir detective) merge into undifferentiated blue shadow.\n\n**Verdict:** Elegant, historically precise, and emotionally resonant. One of the most refined filters in the gallery.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.9,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.7,
+        "Technical Execution": 0.8,
+        "Artistic Impact": 0.8
+      },
+      "score-raw": 8.1,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 9.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 7.0,
+        "Technical Execution": 8.0,
+        "Artistic Impact": 8.0
+      },
+      "rank": 7,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "solarized-dream",
+      "name": "Solarized Dream",
+      "score": 0.79,
+      "feedback": "**Concept:** Sabattier solarization — darkroom technique where partial re-exposure during development creates psychedelic tonal inversions and Mackie lines at tonal boundaries.\n\n**What works:**\n\n- The **comic** output is the single most visually explosive image in the gallery. The Sabattier effect creates neon tones — electric orange, acid green, violet — that transform the noir panels into something from a fever dream. The magical girl panel becomes a psychedelic vision of innocence under siege. This is a genuinely extraordinary image.\n- The per-channel threshold variation (different solarization points for R, G, B) creates color shifts that are more interesting than simple luminance inversion. This technical choice shows understanding of the Sabattier process.\n- Conceptually grounded: solarization was embraced by Man Ray, Salvador Dalí, and Lee Miller as a Surrealist darkroom technique. The filter carries this art-historical weight.\n\n**What doesn't work:**\n\n- The **chart** has data label rendering artifacts — percentage labels appear doubled or displaced in some bars. This is a real bug that undermines the chart's readability.\n- The **photo** is effective but less surprising; psychedelic portrait rendering is a common filter effect and doesn't have the same impact as the comic result.\n\n**Verdict:** One of the most artistically ambitious filters in the gallery. The comic result alone is museum-quality. Would be ranked higher if not for the chart label bugs.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.8,
+        "Conceptual Coherence": 0.9,
+        "Cross-Input Versatility": 0.7,
+        "Technical Execution": 0.6,
+        "Artistic Impact": 1.0
+      },
+      "score-raw": 7.9,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 8.0,
+        "Conceptual Coherence": 9.0,
+        "Cross-Input Versatility": 7.0,
+        "Technical Execution": 6.0,
+        "Artistic Impact": 10.0
+      },
+      "rank": 8,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "graphite-study",
+      "name": "Graphite Study",
+      "score": 0.78,
+      "feedback": "**Concept:** Pencil/graphite life-drawing study on cream paper — delicate directional marks, soft tonal variation, sketch-like linework.\n\n**What works:**\n\n- The **photo** produces a beautiful, delicate portrait that captures the quality of a master draughtsman's study. The marks are directional (following facial contours), not simply desaturated. The cream paper tone is correctly warm — graphite on paper has a warmth that photocopied B&W lacks.\n- The chart retains full data readability while gaining an understated, hand-drawn quality — as if a student had sketched the chart from life.\n- Consistently pleasant across all three inputs. No failures.\n\n**What doesn't work:**\n\n- The **comic** result, while charming, loses the high contrast that makes comic art readable. Dark inks are softened to medium-gray graphite, and some fine linework disappears.\n- The filter's modesty is both a strength and a limitation: it never surprises, never transcends \"pleasant.\"\n\n**Verdict:** Technically clean and aesthetically pleasing. The best \"understated\" filter in the gallery — the one most suited for contexts where transformation should serve rather than overwhelm.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.8,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.7,
+        "Technical Execution": 0.8,
+        "Artistic Impact": 0.8
+      },
+      "score-raw": 7.8,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 8.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 7.0,
+        "Technical Execution": 8.0,
+        "Artistic Impact": 8.0
+      },
+      "rank": 9,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "linocut-bold",
+      "name": "Linocut Bold",
+      "score": 0.78,
+      "feedback": "**Concept:** Relief printmaking simulation — stark black-and-white morphological reduction, carved-away whites creating bold ink positive-forms, registration marks.\n\n**What works:**\n\n- The **photo** is striking and uncompromising: high-contrast reduction to flat black and white, with the morphological cleaning creating the deliberate simplification of actual carving. The portrait becomes monumental — like a woodcut poster for a political movement.\n- The **comic** is excellent — the noir detective panel already has high contrast, which the linocut processing amplifies into something powerfully graphic. The MYSTERY STREET title becomes like a carved signboard.\n- The concept is pure and committed. Linocut has a strong tradition (Picasso, Matisse) and this filter respects it.\n\n**What doesn't work:**\n\n- The **chart** suffers from morphological operations eroding text — the percentage labels are partially or fully destroyed by the same erosion/dilation passes that clean the image forms. This is a real technical failure: bar shapes survive but their labels don't.\n- All color information is destroyed, which is a necessary consequence of the medium but means the chart loses its legend-based color encoding entirely.\n\n**Verdict:** Magnificent on photo and comic. The chart failure is a significant drag, but the quality of the other outputs is high enough to carry it.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.9,
+        "Conceptual Coherence": 0.9,
+        "Cross-Input Versatility": 0.6,
+        "Technical Execution": 0.6,
+        "Artistic Impact": 0.9
+      },
+      "score-raw": 7.8,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 9.0,
+        "Conceptual Coherence": 9.0,
+        "Cross-Input Versatility": 6.0,
+        "Technical Execution": 6.0,
+        "Artistic Impact": 9.0
+      },
+      "rank": 9,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "silver-daguerreotype",
+      "name": "Silver Daguerreotype",
+      "score": 0.78,
+      "feedback": "**Concept:** Antique silver-plate photograph (1839–1860 process) — S-curve tonal response, silver-grain texture, warm metallic toning, oval vignette with dark edges.\n\n**What works:**\n\n- The **photo** is the finest historical photographic simulation in the gallery. The S-curve correctly maps the tonal response of silver chemistry: deep blacks, compressed midtones, luminous highlights. The metallic grain texture is on the right scale. The oval vignette places the subject in a locket.\n- The **comic** works beautifully — the oval frame creates an uncanny juxtaposition: Victorian portrait photography applied to noir detective content. The MYSTERY STREET panel, darkened and vignetted, looks like evidence from a 19th-century murder investigation.\n- Conceptual specificity is exceptional: the daguerreotype is the most historically documented early photographic process, and this filter's adherence to its visual grammar is remarkable.\n\n**What doesn't work:**\n\n- The **chart** is significantly damaged by the oval vignette, which darkens the central bars. The tallest bar (North America, center-left) is partially obscured. The vignette is a deliberate aesthetic choice but one that should have been adapted for data visualization contexts.\n- The same vignette that makes the photo so beautiful is the filter's Achilles heel on chart inputs.\n\n**Verdict:** The highest-fidelity historical photographic simulation in the gallery. A masterpiece on portrait inputs. Would be ranked higher without the chart vignette problem.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.9,
+        "Conceptual Coherence": 0.9,
+        "Cross-Input Versatility": 0.6,
+        "Technical Execution": 0.6,
+        "Artistic Impact": 0.9
+      },
+      "score-raw": 7.8,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 9.0,
+        "Conceptual Coherence": 9.0,
+        "Cross-Input Versatility": 6.0,
+        "Technical Execution": 6.0,
+        "Artistic Impact": 9.0
+      },
+      "rank": 9,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "copper-plate-etching",
+      "name": "Copper Plate Etching",
+      "score": 0.76,
+      "feedback": "**Concept:** Intaglio printmaking simulation — crosshatch line texture built from angled fine lines, ivory/cream paper tone, engraved mark density proportional to image darkness.\n\n**What works:**\n\n- The **chart** is excellent: each bar is filled with crosshatch marks at a density corresponding to its value. The cream paper background is correct — traditional etching paper is warm ivory, not white. The title text is rendered in a slightly eroded serif that feels engraved.\n- The **comic** is the best output: the noir detective panel rendered in crosshatch looks like a 19th-century illustrated novel — a Doré engraving, a Cruikshank. The diagonal marks follow contours in a way that actually mimics the directional mark-making of a real engraver. The magical girl panel's delicate linework survives gracefully.\n- The cream paper tone is accurately warm — this small calibration separates this filter from generic \"desaturated\" effects.\n\n**What doesn't work:**\n\n- The **photo** is too dense — the crosshatch marks in the darkest areas (hair, shadow) merge into near-solid black with a slight moiré pattern from competing hatch directions. The face is barely readable. A master engraver would have lightened the mark density in shadow regions to maintain legibility.\n\n**Verdict:** Beautiful concept, beautifully executed on chart and comic. The photo's over-density is a calibration issue that, once fixed, would make this a top-5 filter.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.8,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.7,
+        "Technical Execution": 0.7,
+        "Artistic Impact": 0.8
+      },
+      "score-raw": 7.6,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 8.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 7.0,
+        "Technical Execution": 7.0,
+        "Artistic Impact": 8.0
+      },
+      "rank": 12,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "infrared-reverie",
+      "name": "Infrared Reverie",
+      "score": 0.76,
+      "feedback": "**Concept:** Infrared film photography — vegetation and skin glow white (high near-IR reflectance), skies and dark clothing go deep black, halation blooms around highlights.\n\n**What works:**\n\n- The **photo** produces a beautiful near-monochrome portrait with correct tonal assignments: skin tones glow near-white (skin reflects near-IR strongly), dark fabric goes deep black. The halation around highlights is correctly soft and blooming.\n- Technically correct: the filter understands that IR film is not simply desaturation — it involves channel remapping based on real-world reflectance differences.\n- The grain texture is authentic to pushed B&W film, not just digital noise.\n\n**What doesn't work:**\n\n- The **chart** becomes nearly monochromatic — color-encoded bars lose their chromatic distinctions and all render to similar mid-gray values. This is technically correct (IR film has no color discrimination) but practically unhelpful for data visualization.\n- The concept is inherently limited on non-photographic inputs: charts and comics don't have the organic IR reflectance variation that makes this process interesting.\n\n**Verdict:** Excellent for portraits; inherently limited for non-photographic content. A filter about medium specificity that reveals its own scope.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.8,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.6,
+        "Technical Execution": 0.8,
+        "Artistic Impact": 0.8
+      },
+      "score-raw": 7.6,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 8.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 6.0,
+        "Technical Execution": 8.0,
+        "Artistic Impact": 8.0
+      },
+      "rank": 12,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "cross-stitch-canvas",
+      "name": "Cross-Stitch Canvas",
+      "score": 0.75,
+      "feedback": "**Concept:** Counted cross-stitch embroidery on linen canvas — X-shaped marks on a grid, linen texture, thread color from source image.\n\n**What works:**\n\n- The linen canvas texture is correctly warm and slightly irregular — real linen is not a uniform grid. The X-stitch marks are sized appropriately (large enough to read as stitches, small enough to resolve image content).\n- The **photo** portrait is recognizable through the stitch grid — the face is rendered in varying thread colors that approximate the source palette. A charming folk-art quality.\n- The **chart** is readable and charming: the bars become columns of colored stitches, an inadvertently beautiful visualization of data as needlework.\n\n**What doesn't work:**\n\n- The **comic** loses fine linework to the stitch grid — speech bubble text is partially illegible, and fine details in the magical girl panel disappear into the grid. Cross-stitch has a minimum resolution limit below which it cannot describe fine line work.\n- The concept, while charming, lacks the intellectual depth of the stronger filters.\n\n**Verdict:** Consistently pleasant, technically clean. The charming \"folk art\" filter of the gallery.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.8,
+        "Conceptual Coherence": 0.7,
+        "Cross-Input Versatility": 0.7,
+        "Technical Execution": 0.8,
+        "Artistic Impact": 0.7
+      },
+      "score-raw": 7.5,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 8.0,
+        "Conceptual Coherence": 7.0,
+        "Cross-Input Versatility": 7.0,
+        "Technical Execution": 8.0,
+        "Artistic Impact": 7.0
+      },
+      "rank": 14,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "synthwave-horizon",
+      "name": "Synthwave Horizon",
+      "score": 0.75,
+      "feedback": "**Concept:** 1980s vaporwave/synthwave aesthetic — purple-pink-to-dark-blue gradient, perspective grid, VHS scanlines, chromatic aberration.\n\n**What works:**\n\n- The purple-pink-to-dark-blue gradient is the correct vaporwave palette — not arbitrary pastel, but the specific nostalgia-gradient of 1980s computer graphics and neon-lit video stores.\n- The perspective grid references the retro-3D wireframe aesthetic of early CGI and music video production.\n- Works across all three inputs with consistent character. Vibrant and fun.\n\n**What doesn't work:**\n\n- The aesthetic, while well-executed, is more _stylistic reference_ than _medium simulation_. Vaporwave is a 21st-century internet aesthetic, not a historical artistic medium. The filter evokes a mood rather than a process — this limits its conceptual depth.\n- The chromatic aberration is sometimes heavy-handed, adding visual noise to the photo output without adding emotional content.\n\n**Verdict:** Well-executed contemporary aesthetic filter. Fun and consistent, but less intellectually substantive than the historical medium simulations.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.8,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.7,
+        "Technical Execution": 0.7,
+        "Artistic Impact": 0.7
+      },
+      "score-raw": 7.5,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 8.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 7.0,
+        "Technical Execution": 7.0,
+        "Artistic Impact": 7.0
+      },
+      "rank": 14,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "verdigris-antiquity",
+      "name": "Verdigris Antiquity",
+      "score": 0.8,
+      "feedback": "**Concept:** Oxidized copper patina — teal/verdigris corrosion on warm bronze substrate, with copper-tone highlights and surface texture simulating chemical weathering.\n\n**What works:**\n\n- The teal-on-warm-ochre palette is precisely the color combination of genuine verdigris: the blue-green of copper carbonate against the warm brown of underlying metal. This is not generic \"green photo\" — it's chemically specific.\n- The **chart** output is one of the most elegant in the gallery: the bars read as copper ingots recording sales figures. The legend icons take on the quality of engraved seals.\n- The **comic** is outstanding — the noir detective panel, already monochromatic, gains a haunting antiquity. It reads like a panel discovered on a copper plate in an archaeological dig.\n- Consistent across all three inputs — one of the most versatile filters.\n\n**What doesn't work:**\n\n- The **photo** creates a teal face on a warm background that is visually striking but anatomically odd — human skin in verdigris tones is beautiful in sculpture (think Renaissance bronzes) but the uncanny valley effect is pronounced.\n\n**Verdict:** A filter with genuine material intelligence — it understands oxidation, not just color. The chart and comic results are among the best in the gallery.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.8,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.8,
+        "Technical Execution": 0.8,
+        "Artistic Impact": 0.8
+      },
+      "score-raw": 8.0,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 8.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 8.0,
+        "Technical Execution": 8.0,
+        "Artistic Impact": 8.0
+      },
+      "rank": 16,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "impasto-storm",
+      "name": "Impasto Storm",
+      "score": 0.72,
+      "feedback": "**Concept:** Thick oil paint impasto — brushstroke texture, paint build-up at edges, visible palette knife marks, painterly smearing.\n\n**What works:**\n\n- The thick texture overlay correctly creates the sense of paint that has been pushed rather than applied. There is directionality to the marks.\n- The **chart** is interesting: bars rendered as thick paint strokes with visible impasto build-up at the top edge. The chart reads as a _painted_ chart — an oil painting of data.\n- The **photo** produces a tactile, richly textured portrait. The impasto adds physical weight to the image.\n\n**What doesn't work:**\n\n- The brushstroke direction lacks the Van Gogh-level energy that the concept implies. \"Impasto storm\" suggests dynamic, swirling marks — the actual output is more of a uniform texture overlay than directional paint movement.\n- The **comic** loses the line clarity that makes comics readable; impasto texturing is not naturally suited to inked illustration.\n\n**Verdict:** Good technical execution of a texture concept, but the \"storm\" energy promised by the name isn't fully delivered.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.7,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.7,
+        "Technical Execution": 0.7,
+        "Artistic Impact": 0.7
+      },
+      "score-raw": 7.2,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 7.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 7.0,
+        "Technical Execution": 7.0,
+        "Artistic Impact": 7.0
+      },
+      "rank": 17,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "iron-rust",
+      "name": "Iron & Rust",
+      "score": 0.72,
+      "feedback": "**Concept:** Oxidized iron surface — rust orange with horizontal grain, pitting corrosion texture, metallic highlight variation.\n\n**What works:**\n\n- The rust orange palette is correctly warm and slightly varied — real rust is not uniform but has patches of different oxidation depths. The filter captures this variety.\n- The **comic** is excellent: the noir detective panel rendered in rust tones looks like a page found in a flooded basement — an aged, damaged artifact. This is a filter that suits content with history.\n- The horizontal grain correctly references the direction of metal rolling and weathering.\n\n**What doesn't work:**\n\n- The **photo** receives too heavy an orange cast. The face becomes an almost uniform rust-orange mask with little tonal variation — the corrosion texture overwhelms the portrait rather than adding to it.\n- The pitting texture in flat areas reads more like image noise than actual surface corrosion.\n\n**Verdict:** Excellent for aged-artifact aesthetics on comic and chart content. Needs recalibration for portrait photography.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.8,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.6,
+        "Technical Execution": 0.6,
+        "Artistic Impact": 0.8
+      },
+      "score-raw": 7.2,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 8.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 6.0,
+        "Technical Execution": 6.0,
+        "Artistic Impact": 8.0
+      },
+      "rank": 17,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "risograph-reverie",
+      "name": "Risograph Reverie",
+      "score": 0.72,
+      "feedback": "**Concept:** Risograph printer simulation — two-color halftone (coral + teal), misregistered passes, cream paper texture.\n\n**What works:**\n\n- The **photo** is genuinely beautiful — perhaps the most realistic simulation of an actual riso print in the gallery. The coral-teal two-color split, with halftone dots at appropriate density and slight misregistration, would fool a casual viewer into thinking this was photographed from a printed zine.\n- Misregistration is calibrated well: present enough to be visible, restrained enough not to destroy the image.\n\n**What doesn't work:**\n\n- The **chart** background color is incorrect — it renders as steel-blue rather than the cream paper color that characterizes riso printing. This is a significant authenticity error: riso paper is distinctively warm cream, not cool blue.\n- The **comic** left panels are muddy — the coral-teal two-color system struggles when applied to complex multi-panel compositions with varying tonal ranges.\n\n**Verdict:** The photo output is a standout. The chart background error is distracting and undermines the overall score.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.8,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.6,
+        "Technical Execution": 0.6,
+        "Artistic Impact": 0.8
+      },
+      "score-raw": 7.2,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 8.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 6.0,
+        "Technical Execution": 6.0,
+        "Artistic Impact": 8.0
+      },
+      "rank": 17,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "brutalist-duotone",
+      "name": "Brutalist Duotone",
+      "score": 0.71,
+      "feedback": "**Concept:** Bauhaus/brutalist graphic design — acid yellow and charcoal black duotone, high contrast, bold typography aesthetic.\n\n**What works:**\n\n- The **photo** is one of the gallery's most arresting outputs — acid yellow and charcoal black create a Bauhaus poster of extraordinary boldness. The face reads through the duotone with dramatic shadow/highlight mapping.\n- The **comic** is equally strong: the MYSTERY STREET panel in acid yellow and charcoal looks like a genuine two-color pulp printing artifact — exactly what a brutalist graphic designer would produce.\n- The palette choice is specific and historically grounded: acid yellow (Bauhaus primary palette) + charcoal (industrial print black) is a real graphic design tradition.\n\n**What doesn't work:**\n\n- The **chart** is a significant failure: most bars become invisible, washed out to the yellow ground color. The yellow-dominant duotone absorbs light-colored bar values into the background. The chart data is effectively destroyed.\n- This is a fundamental mismatch between the filter and chart inputs: duotone processes that work beautifully on tonal gradients (faces, photographs) fail on flat-color bar charts.\n\n**Verdict:** Spectacular on portraits and comics; genuinely fails on charts. A filter that knows its medium but doesn't know its limits.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.9,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.5,
+        "Technical Execution": 0.5,
+        "Artistic Impact": 0.8
+      },
+      "score-raw": 7.1,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 9.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 5.0,
+        "Technical Execution": 5.0,
+        "Artistic Impact": 8.0
+      },
+      "rank": 20,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "charcoal-on-kraft",
+      "name": "Charcoal on Kraft",
+      "score": 0.7,
+      "feedback": "**Concept:** Charcoal drawing on kraft brown paper — dark marks on warm brown, soft smudging, paper grain visible.\n\n**What works:**\n\n- The **comic** is excellent: pulp noir rendered in charcoal on brown paper has an authentic hand-made quality that suits the genre perfectly. The warm brown paper makes the noir content feel like a found sketch from the period.\n- The kraft paper color is correctly warm-brown — not orange, not tan, but the specific warm gray-brown of kraft paper. Small calibration, large impact.\n\n**What doesn't work:**\n\n- The **photo** is too dark — the charcoal marks dominate over the paper color, making the result feel more like a dark sepia photograph than a charcoal drawing. A real charcoal drawing on kraft paper would have more visible paper texture and lighter preserved areas.\n- The mark texture in the photo doesn't read as directional charcoal strokes — it reads as a flat dark overlay. This is the difference between _simulating charcoal_ and _simulating a photo of charcoal_.\n\n**Verdict:** Charming concept, strong on comic, needs calibration for photo inputs.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.7,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.6,
+        "Technical Execution": 0.7,
+        "Artistic Impact": 0.7
+      },
+      "score-raw": 7.0,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 7.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 6.0,
+        "Technical Execution": 7.0,
+        "Artistic Impact": 7.0
+      },
+      "rank": 21,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "terminal-matrix",
+      "name": "Terminal Matrix",
+      "score": 0.66,
+      "feedback": "**Concept:** ASCII character-cell rendering on a phosphor-green CRT terminal — dark background, monospace character grid, scanline phosphor glow.\n\n**What works:**\n\n- The **photo** is one of the gallery's best outputs for this filter. A dark background with glowing green portrait, rendered in ASCII characters at the right size — this is the Matrix aesthetic done correctly. The face is recognizable, the character cells are readable, the green glow is authentic.\n- The **noir detective comic** panel is outstanding: dark-background panels benefit from the CRT rendering and read like a vintage terminal displaying surveillance footage.\n\n**What doesn't work:**\n\n- The **chart** is a fundamental failure: instead of dark background with green characters, the chart output has a light/yellow-green background. This inverts the entire CRT aesthetic. The whole point of terminal green is phosphor glow against darkness — a light background destroys this.\n- The **magical girl comic** panel fails similarly: light-background panels render as green-tinted, not as CRT displays.\n- The filter needs to apply a background-darkening step before character rendering, regardless of input brightness.\n\n**Verdict:** When the filter works (dark inputs), it's exceptional. When it fails (light inputs), the failure is complete. A targeted fix to the background handling would elevate this significantly.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.7,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.5,
+        "Technical Execution": 0.5,
+        "Artistic Impact": 0.8
+      },
+      "score-raw": 6.6,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 7.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 5.0,
+        "Technical Execution": 5.0,
+        "Artistic Impact": 8.0
+      },
+      "rank": 22,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "noir-rain",
+      "name": "Noir Rain",
+      "score": 0.64,
+      "feedback": "**Concept:** Film noir cinematography — high-contrast darkness, vertical rain streaks, neon reflections in puddles, chromatic aberration from wet lens.\n\n**What works:**\n\n- At its best moments (the noir detective comic panel, the darker areas of the photo), the rain texture and neon reflections create genuine cinematic atmosphere. The concept is rich and evocative.\n- The darkness compression is correct for film noir — a deliberately crushed shadow zone is part of the aesthetic.\n\n**What doesn't work:**\n\n- The **photo** chromatic aberration is too aggressive on the face — the color fringing reads as a technical error rather than an artistic effect. It crosses the line from \"cinematic lens artifact\" to \"broken image.\"\n- The **chart** assigns inconsistent colors to the bars — some bars get neon-pink treatment, others get different tones. This appears to be a bug in the neon-reflection generation that samples different hues per region without a coherent mapping.\n- The **magical girl comic** panel is muddy — the film noir darkening is at war with the bright, cheerful aesthetic of the source material.\n\n**Verdict:** Excellent concept with inconsistent execution. The filter is at its best when the source material is already dark.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.7,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.5,
+        "Technical Execution": 0.5,
+        "Artistic Impact": 0.7
+      },
+      "score-raw": 6.4,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 7.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 5.0,
+        "Technical Execution": 5.0,
+        "Artistic Impact": 7.0
+      },
+      "rank": 23,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "pointillist-garden",
+      "name": "Pointillist Garden",
+      "score": 0.64,
+      "feedback": "**Concept:** Seurat/Neo-Impressionist pointillism — broken-colour dots of varying radius on white canvas, optical color mixing.\n\n**What works:**\n\n- The **chart** is charming: each bar becomes a column of colored dots that cluster visually into the bar form. At reading distance, the dots blend into the bar color — correct optical mixing.\n- The **comic** is vibrant — the dot clusters at panel boundaries create a pleasant texture.\n- The white canvas ground is correctly used as negative space between dots.\n\n**What doesn't work:**\n\n- The **photo** is too dark and heavy — the dots are too large and/or too opaque, causing the face to disappear into a dark mass of closely-packed dots. Seurat used _varied_ dot sizes — the smallest dots in dark areas, larger dots in lit areas, to preserve tonal range. Uniform dot size creates even density which reads as darkness.\n- The filter would benefit from dot-size modulation based on local luminance.\n\n**Verdict:** Good concept, partially executed. The chart is delightful; the portrait is a technical problem that better dot-size calibration would fix.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.7,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.5,
+        "Technical Execution": 0.5,
+        "Artistic Impact": 0.7
+      },
+      "score-raw": 6.4,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 7.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 5.0,
+        "Technical Execution": 5.0,
+        "Artistic Impact": 7.0
+      },
+      "rank": 23,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "watercolor-bloom",
+      "name": "Watercolor Bloom",
+      "score": 0.62,
+      "feedback": "**Concept:** Wet-on-wet watercolor — pigment bleeds at edges, dried watercolor rings, paper granulation, color blooms.\n\n**What works:**\n\n- The **comic** is the filter's best output — pastel watercolor washes suit the magical girl panels beautifully, softening the inks into something dreamy and delicate.\n- The paper granulation texture is correctly subtle — watercolor paper has a texture that adds warmth without overwhelming the image.\n- The concept is charming and the color palette retention is good.\n\n**What doesn't work:**\n\n- The **photo** is almost unchanged — the watercolor effect is so subtle that the transformation barely registers. The filter's \"bloom\" and \"bleed\" effects are invisible at the level of detail present in a portrait photograph.\n- This is the fundamental problem: watercolor's characteristic wet-edge effects require areas of flat wash — photography's continuous-tone gradients don't create the conditions for wet-on-wet blooms to emerge.\n- The filter needs a more aggressive stylization step (edge detection to find wash boundaries, local saturation boost) to make its effects visible on photographic input.\n\n**Verdict:** Lovely concept that partially delivers on illustration/comic inputs. Nearly invisible on photography. The filter has not found its right transformation strategy for all input types.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.6,
+        "Conceptual Coherence": 0.8,
+        "Cross-Input Versatility": 0.5,
+        "Technical Execution": 0.5,
+        "Artistic Impact": 0.7
+      },
+      "score-raw": 6.2,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 6.0,
+        "Conceptual Coherence": 8.0,
+        "Cross-Input Versatility": 5.0,
+        "Technical Execution": 5.0,
+        "Artistic Impact": 7.0
+      },
+      "rank": 25,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "holographic-foil",
+      "name": "Holographic Foil",
+      "score": 0.61,
+      "feedback": "**Concept:** Iridescent holographic foil — rainbow hue cycling based on image structure, metallic reflectance simulation.\n\n**What works:**\n\n- The concept is visually interesting: holographic foil creates hue variation based on viewing angle, and mapping this to image luminance/position is a plausible simulation approach.\n- The **chart** produces a psychedelic but visually interesting result — each bar catches a different rainbow region, creating a pop-art quality.\n\n**What doesn't work:**\n\n- The **photo** nearly loses the face — the dense hue cycling in highlight areas creates noise-like color variation that disrupts face recognition. Holographic foil in reality has large, smooth hue zones; this filter creates fine-grained chaotic variation that reads as noise, not iridescence.\n- The fundamental problem is scale: holographic hue shifts are smooth and large-area in reality; the simulation creates small-area variation that looks like a color-channel error.\n- The **comic** is visually overwhelming — the dense iridescence obscures the linework.\n\n**Verdict:** Interesting concept, incorrect scale of implementation. The hue zones need to be 5–10× larger to simulate actual holographic foil behavior.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.7,
+        "Conceptual Coherence": 0.7,
+        "Cross-Input Versatility": 0.5,
+        "Technical Execution": 0.5,
+        "Artistic Impact": 0.6
+      },
+      "score-raw": 6.1,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 7.0,
+        "Conceptual Coherence": 7.0,
+        "Cross-Input Versatility": 5.0,
+        "Technical Execution": 5.0,
+        "Artistic Impact": 6.0
+      },
+      "rank": 26,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "byzantine-mosaic",
+      "name": "Byzantine Mosaic",
+      "score": 0.55,
+      "feedback": "**Concept:** Byzantine tesserae mosaic — square tiles with gold grout, warm earthy palette, gold highlights on dark elements.\n\n**What works:**\n\n- The gold grout between tiles is correctly warm and luminous — Byzantine mosaics are distinguished by their gold tesserae and gold mortar, and the filter captures this palette.\n- The **comic** result has a certain warmth — the tiled pattern creates color-field areas reminiscent of abstract mosaic.\n\n**What doesn't work:**\n\n- The **photo** is too dark — the mosaic tiling quantizes the portrait into so few color regions that the face becomes a dark, nearly unreadable pattern. Byzantine mosaics (e.g., Ravenna) actually have remarkable tonal range; this filter loses it.\n- The **chart** suffers from tile size: the tiles are so small that data bar shapes are barely interrupted, but so large that the result looks pixelated rather than mosaic-like.\n- Byzantine mosaics derive their power from large, deliberately imprecise tiles that create luminous color fields. The filter creates small, precise tiles that create a blurry photo effect.\n\n**Verdict:** Concept understood but execution needs tile-size recalibration and better tonal mapping. The gold grout is a beautiful detail in a filter that otherwise needs significant work.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.6,
+        "Conceptual Coherence": 0.7,
+        "Cross-Input Versatility": 0.4,
+        "Technical Execution": 0.5,
+        "Artistic Impact": 0.5
+      },
+      "score-raw": 5.5,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 6.0,
+        "Conceptual Coherence": 7.0,
+        "Cross-Input Versatility": 4.0,
+        "Technical Execution": 5.0,
+        "Artistic Impact": 5.0
+      },
+      "rank": 27,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "origami-fold",
+      "name": "Origami Fold",
+      "score": 0.46,
+      "feedback": "**Concept:** Paper folding simulation — triangular facets with fold shading, crease shadows, origami color palette.\n\n**What works:**\n\n- The concept is appealing: origami as a transformation metaphor (source material re-folded into a new form) is intellectually interesting.\n- The triangular facet palette on the **chart** creates vivid color regions that are briefly attractive.\n\n**What doesn't work:**\n\n- The **chart** data is completely obliterated — bars are unrecognizable as separate elements; the entire chart becomes an abstract triangular mosaic.\n- The **photo** and **comic** similarly destroy content — all three inputs become abstract Voronoi-like mosaics with no connection to the source.\n- The most significant problem: the filter doesn't _fold_ the image — it _fragments_ it. Origami preserves the surface (paper doesn't gain or lose area); this filter discards content entirely. The metaphor is broken at the implementation level.\n- The triangular facets don't create fold shadows convincingly — they look like a low-polygon 3D rendering, not paper folds.\n\n**Verdict:** A concept that is not realized in the implementation. The output is a generic mosaic effect rather than an origami simulation.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.5,
+        "Conceptual Coherence": 0.6,
+        "Cross-Input Versatility": 0.3,
+        "Technical Execution": 0.4,
+        "Artistic Impact": 0.5
+      },
+      "score-raw": 4.6,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 5.0,
+        "Conceptual Coherence": 6.0,
+        "Cross-Input Versatility": 3.0,
+        "Technical Execution": 4.0,
+        "Artistic Impact": 5.0
+      },
+      "rank": 28,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "pop-art-screen",
+      "name": "Pop Art Screen",
+      "score": 0.46,
+      "feedback": "**Concept:** Pop art printing — Warhol flat colors, Ben-Day dots, bold outlines, high saturation.\n\n**What works:**\n\n- The **comic** partially works: the right panel gains some of the flat-color, high-contrast quality of pop art. The concept is correct and historically grounded.\n- Ben-Day dots are present in some outputs.\n\n**What doesn't work:**\n\n- The **photo** is perhaps the worst output in the gallery relative to its concept: instead of flat color areas and bold outlines (Warhol silkscreen), the photo output looks like a faded pencil sketch — there is no flat color, no halftone, no bold line. The transformation is entirely wrong.\n- This appears to be a bug: the photo input is receiving a different processing path than intended. The poster-paint flat areas that define pop art — the signature contribution of Warhol — are completely absent.\n- The **chart** is mediocre: dot pattern is present but color blocking is incomplete.\n\n**Verdict:** A fundamental implementation failure on the photo input. The concept is strong (pop art is a rich tradition) but the execution does not deliver the promised transformation.",
+      "criteria": {
+        "Aesthetic Authenticity": 0.4,
+        "Conceptual Coherence": 0.7,
+        "Cross-Input Versatility": 0.4,
+        "Technical Execution": 0.3,
+        "Artistic Impact": 0.5
+      },
+      "score-raw": 4.6,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 4.0,
+        "Conceptual Coherence": 7.0,
+        "Cross-Input Versatility": 4.0,
+        "Technical Execution": 3.0,
+        "Artistic Impact": 5.0
+      },
+      "rank": 28,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    },
+    {
+      "evaluator": "claude",
+      "filter-id": "cathedral-glass",
+      "name": "Cathedral Glass",
+      "score": 0.4,
+      "feedback": "**Concept:** Stained glass window simulation — color segmentation into glass \"panes,\" black lead came at boundaries, luminous color fields.\n\n**What works:**\n\n- The concept is clear and art-historically resonant. Gothic stained glass is one of the great achievements of medieval art.\n- The lead came (black boundaries) between regions is present in all three outputs.\n\n**What doesn't work:**\n\n- The **chart** output looks like a pixelated JPEG artifact, not stained glass. The color regions are extremely small and irregular — stained glass panels are large (the size of a fist or hand) and deliberately shaped. The filter is creating pixel-level regions, not glass-panel regions.\n- The **photo** becomes a chaotic mosaic that obliterates the portrait. The face is unrecognizable.\n- The **comic** becomes an explosion of random colors without any of the luminous warmth that makes stained glass beautiful.\n- The root problem: stained glass derives its character from _large, shaped, deliberately colored areas_ with intentional symbolic or representational meaning. The filter fragments the image into tiny arbitrary regions that convey neither the scale nor the deliberateness of glass-making.\n- There is no simulation of light transmission — stained glass glows from within; this filter produces a dark, opaque mosaic.\n\n**Verdict:** The filter does not simulate stained glass — it simulates image fragmentation with black boundaries. A fundamental rethinking of the segmentation scale and light-transmission model is needed.\n## Part 5: Conclusions and Observations",
+      "criteria": {
+        "Aesthetic Authenticity": 0.4,
+        "Conceptual Coherence": 0.6,
+        "Cross-Input Versatility": 0.3,
+        "Technical Execution": 0.3,
+        "Artistic Impact": 0.4
+      },
+      "score-raw": 4.0,
+      "criteria-raw": {
+        "Aesthetic Authenticity": 4.0,
+        "Conceptual Coherence": 6.0,
+        "Cross-Input Versatility": 3.0,
+        "Technical Execution": 3.0,
+        "Artistic Impact": 4.0
+      },
+      "rank": 30,
+      "source": {
+        "file": "sonnet-evaluation.md",
+        "section": "Part 3 / Part 4"
+      }
+    }
+  ]
+}
