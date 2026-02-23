@@ -12,9 +12,10 @@ the feel of vintage scientific instrumentation.
 Thermal colormapping is a classic perceptual trick: it reassigns luminance to a
 perceptually non-linear hue progression that our eyes parse faster than greyscale.
 Applied to a data chart, it:
-- Immediately highlights *hot* (high-value) regions versus *cold* (low-value) ones
+
+- Immediately highlights _hot_ (high-value) regions versus _cold_ (low-value) ones
 - Turns a dry visualization into something viscerally dramatic
-- The scanline + noise layer adds temporal texture — it looks *live*, as if the
+- The scanline + noise layer adds temporal texture — it looks _live_, as if the
   sensor is actively reading out
 
 This filter demonstrates how re-encoding the same data through a different visual

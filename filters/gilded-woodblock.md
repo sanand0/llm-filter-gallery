@@ -9,7 +9,7 @@ gold. Woodgrain noise and a tea-stained vignette complete the illusion.
 
 ## Why It's Interesting
 
-Woodblock printing is inherently a *quantization* technique — an artisan carves
+Woodblock printing is inherently a _quantization_ technique — an artisan carves
 discrete tonal layers, prints each in a separate pass, and accepts that the
 medium imposes simplification. This filter maps that process onto a data chart:
 
@@ -23,7 +23,7 @@ medium imposes simplification. This filter maps that process onto a data chart:
 - Horizontal **woodgrain noise** (seeded RNG for reproducibility) simulates
   the fibrous texture of the printing block bleeding through the washi paper
 - A golden highlight tint warms luminous regions, evoking the gold-leaf
-  accents that appear in premium *nishiki-e* prints
+  accents that appear in premium _nishiki-e_ prints
 
 The result is meditative and tactile: a data visualization that looks like it
 could hang in a museum alongside Hokusai.

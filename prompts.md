@@ -8,7 +8,6 @@ What CLI tools are best for "filter"-like image editing techniques, e.g. a graff
 
 **ANS**: ImageMagick, Fred's ImageMagick Scripts, GMIC.
 
-
 ## AI Coding Agent selection
 
 I want an AI coding agent to continuously discover new image editing techniques, e.g. a graffiti effect or an embroidery effect - something that can be created through a series of filters via Python/JS/... programs or ImageMagick or FFmpeg or any such tools. (In fact, part of the discovery is about what CLI tools can create interesting, innovative new filters.)
@@ -66,3 +65,30 @@ Include `filters/graphite-study.md` which is the same as `output/*/README.md` --
 Move `output/*/output.webp` into `output/$image-$filter-name.webp`, e.g. `output/comic-graphite-study.webp`.
 
 Update index.html accordingly.
+
+## Evaluate quality
+
+### GPT Evaluation (Copilot Yolo, GPT 5.3 Codex xhigh)
+
+Let's evaluate the filters in this repository. Which of these are really good and why?
+Think like an artist, as an expert in data art, aesthetics, and visual design.
+What would an expert would look for (that a beginner would miss) in these visual effects and filters?
+Identify the criteria by searching online for the best researched material around this and augment your trained knowledge.
+Imagine that you are a judge judging an art exhibition.
+Use those criteria to go through all of the output images and carefully evaluate them against these criteria.
+Prepare a scoring table as if such a judge would have created it.
+Also include specific feedback (what's good, what's not good) for each of these entries that will support your rationale.
+The output should be an `gpt-evaluation.md` that has the scoring table and the feedback for each of the filters.
+Remember that you're evaluating at the filter level, not the image level. So if a filter creates a very interesting effect on some images but not others, evaluate that appropriately.
+
+### Claude Evaluation (Copilot Yolo, Sonnet 4.6 High)
+
+Same as above but output is `sonnet-evaluation.md`.
+
+### Gemini Evaluation (Copilot Yolo, Gemini 3 Pro)
+
+Same as above but output is `gemini-evaluation.md`.
+
+### Document process
+
+In the same output file, also document the process you followed to identify the criteria, evaluate the images, and come to the conclusions. This will help in making the process transparent and reproducible.
